@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL; // <--- 1. IMPORTANTE: Añade esta línea
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -61,6 +62,11 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function configureDefaults(): void
     {
+        // 2. FORZAR HTTPS EN PRODUCCIÓN
+        if (app()->isProduction()) {
+            URL::forceScheme('https');
+        }
+
         Date::use(CarbonImmutable::class);
 
         DB::prohibitDestructiveCommands(
