@@ -490,7 +490,8 @@ Cronología y excelencia deportiva <?php echo $__env->renderComponent(); ?>
             <div style="color:#facc15; font-weight:bold; margin-top:5px;">Resultados y Galería Oficial</div>
         </div>
 
-        <div style="padding:30px; background:#fcfcfc; max-height:75vh; overflow-y:auto;">
+        <div style="padding:30px; background:#fcfcfc; height:80vh; overflow-y:auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;">
+            
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($oro && $plata && $bronce): ?>
                 <?php
                     $podioImgs = [
