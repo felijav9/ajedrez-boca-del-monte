@@ -522,10 +522,7 @@ x-data="{
                     Próximo Evento ⏳
                 </div>
             </div>
-            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 15px 25px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.2);">
-                <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; opacity: 0.9;">Total Inscritos</div>
-                <div style="font-size: 28px; font-weight: 900;">{{ $registrados->count() }}</div>
-            </div>
+            
         </div>
     </div>
 
@@ -547,58 +544,79 @@ x-data="{
             </div>
         </div>
 
-        <div style="background: white; border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-            <div style="padding: 20px; border-bottom: 1px solid #f1f5f9; background: #fafafa; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
-                <h4 style="margin:0; color:#002c53; font-weight:800;">👥 Jugadores Confirmados</h4>
-                <div style="position: relative; width: 100%; max-width: 300px;">
-                    <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;">🔍</span>
-                    <input x-model="search" type="text" placeholder="Buscar por nombre o apellido" 
-                           style="width: 100%; padding: 10px 15px 10px 35px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 13px; outline: none;">
-                </div>
-            </div>
-
-            @if($registrados->count() > 0)
-                <div style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
-                        <thead style="background: #f8fafc; color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 11px;">
-                            <tr>
-                                <th style="padding: 15px 20px;">Jugador / Equipo</th>
-                                <th style="padding: 15px 20px;">Género</th>
-                                <th style="padding: 15px 20px;">Edad</th>
-                                <th style="padding: 15px 20px;">Categoría</th>
-                            </tr>
-                        </thead>
-                        <tbody style="color: #334155;">
-                            <template x-for="j in filteredJugadores" :key="j.nombre">
-                                <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
-                                    <td style="padding: 15px 20px;">
-                                        <div style="font-weight: 800; color: #002c53;" x-text="j.nombre"></div>
-                                        <div style="font-size: 11px; color: #94a3b8;" x-text="j.equipo"></div>
-                                    </td>
-                                    <td style="padding: 15px 20px;">
-                                        <span style="padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600;" 
-                                              :style="j.genero === 'masculino' ? 'background:#e0f2fe; color:#0369a1;' : (j.genero === 'femenino' ? 'background:#fce7f3; color:#be185d;' : '')"
-                                              x-text="j.genero"></span>
-                                    </td>
-                                    <td style="padding: 15px 20px; font-weight: 600;" x-text="j.edad"></td>
-                                    <td style="padding: 15px 20px;">
-                                        <div style="background: #f1f5f9; padding: 4px 10px; border-radius: 8px; display: inline-block; font-size: 12px; font-weight: 700; color: #475569;" x-text="j.categoria"></div>
-                                    </td>
-                                </tr>
-                            </template>
-                        </tbody>
-                    </table>
-                </div>
-                <div x-show="filteredJugadores.length === 0" style="padding: 40px; text-align: center; color: #94a3b8;">
-                    <p style="font-weight: 600;">No se encontraron resultados para su búsqueda.</p>
-                </div>
-            @else
-                <div style="padding: 60px 20px; text-align: center; color: #64748b;">
-                    <div style="font-size: 40px; margin-bottom: 15px;">♟️</div>
-                    <h5 style="margin:0; font-weight: 800; color: #002c53;">¡Pronto se anunciarán los participantes!</h5>
-                </div>
-            @endif
+        <div style="
+    background: white; 
+    border-radius: 24px; 
+    border: 1px solid #f1f5f9; 
+    overflow: hidden; 
+    box-shadow: 0 10px 25px -5px rgba(0, 44, 83, 0.08);
+    transition: transform 0.3s ease;
+" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+    
+    <div style="
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        padding: 20px 24px;
+        background: linear-gradient(to right, #ffffff, #f8fafc);
+    ">
+        {{-- Lado Izquierdo: Icono y Texto --}}
+      
+        <div style="display: flex; align-items: center; gap: 14px;">
+    {{-- Contenedor del Icono --}}
+    <div style="
+            background: #002c53; 
+            width: 45px; 
+            height: 45px; 
+            border-radius: 14px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 44, 83, 0.15);
+        ">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="15" cy="7" r="3"/>
+                <path d="M11 21v-3a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v3"/>
+                <circle cx="7" cy="7" r="3"/>
+                <path d="M3 21v-2a4 4 0 0 1 4-4h2"/>
+            </svg>
         </div>
+
+    {{-- Texto --}}
+    <div>
+        <h4 style="margin: 0; color: #002c53; font-weight: 800; font-size: 17px; letter-spacing: -0.025em; line-height: 1.2;">
+            Jugadores Confirmados
+        </h4>
+        
+    </div>
+</div>
+
+        {{-- Lado Derecho: Botón Estilizado --}}
+        <button 
+            x-on:click="$flux.modal('jugadores-confirmados').show()"
+            style="
+                background: #002c53; 
+                color: #facc15; 
+                padding: 10px 18px; 
+                border-radius: 12px; 
+                font-size: 13px; 
+                font-weight: 700; 
+                border: none;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.2s ease;
+                box-shadow: 0 4px 12px rgba(0, 44, 83, 0.2);
+            "
+            onmouseover="this.style.background='#003d73'; this.style.boxShadow='0 6px 15px rgba(0, 44, 83, 0.3)'"
+            onmouseout="this.style.background='#002c53'; this.style.boxShadow='0 4px 12px rgba(0, 44, 83, 0.2)'"
+        >
+            <span>Ver lista</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+        </button>
+    </div>
+</div>
     </div>
 
     <div style="padding:20px; text-align:right; background:#f1f5f9; border-top:1px solid #e2e8f0;">
@@ -607,6 +625,151 @@ x-data="{
         </flux:modal.close>
     </div>
 @endif
+</flux:modal>
+
+    {{-- MODAL JUGADORES --}}
+ {{-- MODAL JUGADORES CONFIRMADOS --}}
+<flux:modal name="jugadores-confirmados" style="max-width:600px; width:95%; border-radius:32px; overflow:hidden; border:none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+
+@if($torneoSeleccionado && $torneoSeleccionado->estado === 'por_realizarse')
+
+@php
+    $registrados = $torneoSeleccionado->participaciones->map(function($p) {
+        return [
+            'nombre' => $p->jugador->nombre . ' ' . $p->jugador->apellido,
+            'equipo' => optional($p->equipo)->nombre ?? 'Competidor Individual',
+            'categoria' => optional($p->categoria)->nombre ?? 'General',
+            'genero' => $p->jugador->genero,
+            'edad' => $p->jugador->edad . ' años',
+            'search' => strtolower(
+                $p->jugador->nombre . ' ' .
+                $p->jugador->apellido . ' ' .
+                (optional($p->equipo)->nombre ?? '') . ' ' .
+                (optional($p->categoria)->nombre ?? '')
+            )
+        ];
+    })->sortBy('nombre')->values();
+@endphp
+
+{{-- HEADER --}}
+<div style="
+    background: linear-gradient(135deg, #002c53 0%, #004d8a 100%); 
+    padding: 30px 25px; 
+    position: relative; 
+    border-bottom: 4px solid #facc15;
+">
+    <div style="display:flex; align-items:center; gap:20px;">
+
+        <div style="
+            background: #002c53; 
+            width: 45px; 
+            height: 45px; 
+            border-radius: 14px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 44, 83, 0.15);
+        ">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="15" cy="7" r="3"/>
+                <path d="M11 21v-3a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v3"/>
+                <circle cx="7" cy="7" r="3"/>
+                <path d="M3 21v-2a4 4 0 0 1 4-4h2"/>
+            </svg>
+        </div>
+
+        <div>
+            <h2 style="margin:0; color:white; font-weight:900; font-size:24px;">
+                Jugadores Confirmados
+            </h2>
+
+            <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+                <span style="background:#facc15; color:#002c53; padding:3px 12px; border-radius:20px; font-weight:900; font-size:11px;">
+                    {{ $registrados->count() }} Participantes
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- BODY --}}
+<div style="padding:25px 25px 80px 25px; background:#f8fafc; max-height:60vh; overflow-y:auto;"
+     x-data="{
+        search: '',
+        jugadores: @js($registrados),
+        get filteredJugadores() {
+            return this.jugadores.filter(j => j.search.includes(this.search.toLowerCase()))
+        }
+     }">
+
+    {{-- BUSCADOR --}}
+    <div style="position:relative; margin-bottom:25px;">
+        <span style="position:absolute; left:18px; top:50%; transform:translateY(-50%);">🔍</span>
+        <input x-model="search" type="text" placeholder="Buscar jugador..."
+            style="width:100%; padding:16px 16px 16px 50px; border-radius:18px; border:2px solid #e2e8f0;">
+    </div>
+
+    {{-- LISTADO O MENSAJE --}}
+    @if($registrados->count() > 0)
+
+        <div style="display:grid; gap:15px;">
+            <template x-for="j in filteredJugadores" :key="j.nombre">
+                <div style="background:white; padding:18px; border-radius:22px; border:1px solid #edf2f7;">
+
+                    <div style="font-weight:900; color:#002c53;" x-text="j.nombre"></div>
+                    <div style="color:#64748b; font-size:13px;" x-text="j.equipo"></div>
+
+                    <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+
+                        <template x-if="j.genero === 'masculino'">
+                            <span style="background:#eff6ff; color:#2563eb; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:800;">
+                                ♂️ Masculino
+                            </span>
+                        </template>
+
+                        <template x-if="j.genero === 'femenino'">
+                            <span style="background:#fdf2f8; color:#db2777; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:800;">
+                                ♀️ Femenino
+                            </span>
+                        </template>
+
+                        <span style="background:#f1f5f9; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:800;" x-text="j.edad"></span>
+
+                        <span style="background:#fffbeb; color:#92400e; padding:4px 10px; border-radius:8px; font-size:11px; font-weight:800;" x-text="j.categoria"></span>
+
+                    </div>
+                </div>
+            </template>
+        </div>
+
+    @else
+
+        {{-- 🔥 MENSAJE CUANDO NO HAY JUGADORES --}}
+        <div style="text-align:center; padding:60px 20px; color:#64748b;">
+            
+            <div style="font-size:40px; margin-bottom:10px;">♟️</div>
+
+            <div style="font-weight:800; font-size:16px; color:#002c53;">
+                Pronto se ingresarán los jugadores
+            </div>
+
+        </div>
+
+    @endif
+
+</div>
+
+{{-- FOOTER --}}
+<div style="padding:20px 25px; background:white; border-top:1px solid #f1f5f9; display:flex; justify-content:center;">
+    <flux:modal.close>
+        <button style="background:#002c53; color:white; padding:14px 60px; border-radius:18px; font-weight:800; border:none;">
+            Cerrar Lista
+        </button>
+    </flux:modal.close>
+</div>
+
+@endif
+
 </flux:modal>
 
 
