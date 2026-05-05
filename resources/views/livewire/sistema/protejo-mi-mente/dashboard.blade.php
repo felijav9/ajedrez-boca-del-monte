@@ -128,11 +128,10 @@
             <nav class="nav-grid">
                 {{-- INICIO: Siempre amarillo no matter what --}}
                 <button 
-                    onclick="window.location.href='{{ url('/') }}'" 
+                    type="button"
                     class="nav-btn btn-inicio-always">
                     Inicio
                 </button>
-
                 {{-- TORNEOS: Negro si seleccionado, sino blanco --}}
                 <button 
                    wire:click="goToTorneos" 

@@ -128,11 +128,10 @@
             <nav class="nav-grid">
                 
                 <button 
-                    onclick="window.location.href='<?php echo e(url('/')); ?>'" 
+                    type="button"
                     class="nav-btn btn-inicio-always">
                     Inicio
                 </button>
-
                 
                 <button 
                    wire:click="goToTorneos" 
