@@ -18,7 +18,9 @@ return new class extends Migration
             $table->date('fecha_inicio');
             $table->date('fecha_fin')->nullable(); 
             $table->string('lugar')->nullable();
-             $table->string('tipo'); 
+            $table->enum('estado', ['por_realizarse', 'en_curso', 'finalizado'])
+            ->default('por_realizarse');
+            $table->string('tipo'); 
             $table->timestamps();
         }); 
     }
