@@ -1,8 +1,34 @@
 <div class="medallero-wrapper" 
-x-data="{ 
+x-data="{
     imgModalSrc: '',
     currentIndex: 0,
     currentImages: [],
+
+    canScrollLeft: false,
+    canScrollRight: false,
+
+    init() {
+        this.checkScroll();
+    },
+
+    checkScroll() {
+        const el = this.$refs.container;
+
+        if (!el) return;
+
+        this.canScrollLeft = el.scrollLeft > 0;
+        this.canScrollRight = el.scrollLeft + el.clientWidth < el.scrollWidth;
+    },
+
+    scrollNext() {
+        this.$refs.container.scrollBy({ left: 400, behavior: 'smooth' });
+        setTimeout(() => this.checkScroll(), 300);
+    },
+
+    scrollPrev() {
+        this.$refs.container.scrollBy({ left: -400, behavior: 'smooth' });
+        setTimeout(() => this.checkScroll(), 300);
+    },
 
     openGallery(images, index) {
         this.currentImages = images;
@@ -24,7 +50,9 @@ x-data="{
             this.imgModalSrc = this.currentImages[this.currentIndex];
         }
     }
-}">
+}"
+
+>
  <style>
     /* Botón de Ver Detalles */
 .btn-detalle-container {
@@ -56,6 +84,50 @@ x-data="{
     filter: brightness(1.1);
 }
 
+/* Estados del Torneo */
+/* Base para todos los tags de estado */
+/* Estados del Torneo - Estilo Vibrante */
+.status-tag {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 6px 12px;
+    border-radius: 10px; /* Bordes ligeramente redondeados según tu estilo */
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    z-index: 30;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    color: white; /* Todos los textos en blanco para resaltar sobre el fondo sólido */
+    display: flex;
+    align-items: center;
+}
+
+/* Estado: por_realizarse (Gris Azulado) */
+.status-por_realizarse {
+    background: #64748b; 
+}
+
+/* Estado: en_curso (Azul Intenso con Animación) */
+.status-en_curso {
+    background: #ef4444; /* Rojo vibrante */
+    animation: pulse-live 1.5s infinite;
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); /* Efecto de brillo inicial */
+}
+
+/* Estado: finalizado (Verde Esmeralda) */
+.status-finalizado {
+    background: #10b981;
+}
+
+/* Animación de pulso sutil */
+@keyframes pulse-simple {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.85; transform: scale(1.02); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
 .btn-detalle:active {
     transform: translateY(0);
 }
@@ -80,6 +152,8 @@ x-data="{
             transition: all 0.5s ease; display: flex; flex-direction: column;
             overflow: hidden; cursor: pointer; position: relative;
         }
+
+        
         
         .tournament-card:hover { transform: translateY(-12px); box-shadow: 0 25px 50px -12px rgba(0, 44, 83, 0.15); }
 
@@ -110,6 +184,69 @@ x-data="{
         .gallery-item { border-radius: 16px; overflow: hidden; cursor: zoom-in; height: 110px; background: #eee; }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
         .gallery-item:hover img { transform: scale(1.1); }
+
+
+        /* --- NUEVA CONFIGURACIÓN CARRUSEL GLOBAL --- */
+.tournament-container-relative {
+    position: relative;
+    display: flex;
+    align-items: center;
+    group;
+}
+
+.tournament-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth; /* Para que al darle click a la flecha deslice suave */
+    gap: 25px;
+    padding: 20px 5px;
+    scrollbar-width: none; /* Firefox */
+}
+
+.tournament-grid::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.tournament-card {
+    flex: 0 0 320px; /* Ancho fijo en escritorio */
+    scroll-snap-align: start;
+}
+
+/* Flechas de Navegación (Solo visibles en Desktop) */
+.nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 40;
+    transition: all 0.3s ease;
+    border: 1px solid #f1f5f9;
+}
+
+.nav-arrow:hover {
+    background: #facc15;
+    color: #002c53;
+}
+
+.arrow-left { left: -25px; }
+.arrow-right { right: -25px; }
+
+@media (max-width: 767px) {
+    .nav-arrow { display: none; } /* Ocultar flechas en móvil */
+    .tournament-card {
+        flex: 0 0 85%; /* En móvil se mantiene el tamaño relativo */
+    }
+}
+        
     </style>
 
     <livewire:sistema.protejo-mi-mente.dashboard />
@@ -140,15 +277,41 @@ x-data="{
 
         {{-- GRID TORNEOS --}}
         {{-- GRID TORNEOS --}}
-            <div class="tournament-grid">
+          {{-- GRID TORNEOS CON NAVEGACIÓN --}}
+<div class="tournament-container-relative" x-data="{ 
+    scrollNext() { $refs.container.scrollBy({ left: 400, behavior: 'smooth' }) },
+    scrollPrev() { $refs.container.scrollBy({ left: -400, behavior: 'smooth' }) }
+}">
+    
+    {{-- Flecha Izquierda --}}
+    <button class="nav-arrow arrow-left"
+    @click="scrollPrev(); checkScroll()"
+    x-show="canScrollLeft">
+
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+
+    {{-- Contenedor del Carrusel --}}
+            <div class="tournament-grid" x-ref="container"
+             @scroll="checkScroll">
                 @foreach ($this->torneos as $t)
                     @php $portada = $t->imagenes->firstWhere('tipo','portada'); @endphp
                     
-                    <div class="tournament-card"> {{-- Quitamos el click de aquí --}}
+                    <div class="tournament-card">
                         <div class="card-img-wrapper">
+                            {{-- Etiquetas de Tipo y Estado --}}
                             <div class="type-tag {{ $t->tipo === 'interno' ? 'tag-interno' : 'tag-externo' }}">
                                 {{ $t->tipo }}
                             </div>
+
+                            <div class="status-tag status-{{ $t->estado }}">
+                                @switch($t->estado)
+                                    @case('por_realizarse') Próximamente @break
+                                    @case('en_curso') En Vivo @break
+                                    @case('finalizado') Finalizado @break
+                                @endswitch
+                            </div>
+
                             <img src="{{ $portada ? asset($portada->ruta) : asset('img/protejo-mi-mente.png') }}">
                         </div>
                         
@@ -159,17 +322,19 @@ x-data="{
                         </div>
                         
                         <div style="padding:20px;">
+                            {{-- Fecha --}}
                             <div style="display:flex; align-items:center; gap:10px; color:#64748b; font-size:14px; margin-bottom:8px;">
                                 <span>📅</span>
                                 <strong>{{ \Carbon\Carbon::parse($t->fecha_inicio)->translatedFormat('d M') }} - {{ \Carbon\Carbon::parse($t->fecha_fin)->translatedFormat('d M Y') }}</strong>
                             </div>
+                            {{-- Lugar --}}
                             <div style="display:flex; align-items:center; gap:10px; color:#64748b; font-size:14px;">
                                 <span>📍</span>
                                 <span>{{ $t->lugar }}</span>
                             </div>
                         </div>
 
-                        {{-- NUEVO BOTÓN --}}
+                        {{-- Botón de Acción --}}
                         <div class="btn-detalle-container">
                             <button class="btn-detalle" wire:click="openTorneo({{ $t->id }})">
                                 <span>Ver información</span>
@@ -180,103 +345,98 @@ x-data="{
                 @endforeach
             </div>
 
+            {{-- Flecha Derecha --}}
+            <button class="nav-arrow arrow-right"
+    @click="scrollNext(); checkScroll()"
+    x-show="canScrollRight">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+        </div>
+
 
         <div style="margin-top:40px;">{{ $this->torneos->links() }}</div>
     </div>
 
     {{-- MODAL DETALLE --}}
-    <flux:modal name="torneo-detalle" style="max-width:1000px; width:95%; padding:0 !important; border-radius:30px; overflow:hidden;">
-        @if($torneoSeleccionado)
-            @php
-                $imagenes = collect($torneoSeleccionado->imagenes);
-                $oro = $imagenes->firstWhere('tipo','gold');
-                $plata = $imagenes->firstWhere('tipo','silver');
-                $bronce = $imagenes->firstWhere('tipo','bronze');
-                $ganadores = $imagenes->firstWhere('tipo','ganadores');
-                $top = $torneoSeleccionado->participaciones->groupBy('categoria_id');
-                $posiciones = $torneoSeleccionado->resultados->whereIn('posicion', [1,2,3])->groupBy('jugador_id');
-            @endphp
+   <flux:modal name="torneo-detalle" style="max-width:1000px; width:95%; padding:0 !important; border-radius:30px; overflow:hidden;">
+    @if($torneoSeleccionado && $torneoSeleccionado->estado === 'finalizado')
+        @php
+            $imagenes = collect($torneoSeleccionado->imagenes);
+            $oro = $imagenes->firstWhere('tipo','gold');
+            $plata = $imagenes->firstWhere('tipo','silver');
+            $bronce = $imagenes->firstWhere('tipo','bronze');
+            $ganadores = $imagenes->firstWhere('tipo','ganadores');
+            $top = $torneoSeleccionado->participaciones->groupBy('categoria_id');
+            $posiciones = $torneoSeleccionado->resultados->whereIn('posicion', [1,2,3])->groupBy('jugador_id');
+        @endphp
 
-            <div style="background:#002c53; padding:40px 30px; color:white;">
-                <flux:heading size="xl" style="color:white !important; font-weight:900; margin:0;">{{ $torneoSeleccionado->nombre }}</flux:heading>
-                <div style="color:#facc15; font-weight:bold; margin-top:5px;">Resultados y Galería Oficial</div>
-            </div>
+        <div style="background:#002c53; padding:40px 30px; color:white;">
+            <flux:heading size="xl" style="color:white !important; font-weight:900; margin:0;">{{ $torneoSeleccionado->nombre }}</flux:heading>
+            <div style="color:#facc15; font-weight:bold; margin-top:5px;">Resultados y Galería Oficial</div>
+        </div>
 
-            <div style="padding:30px; background:#fcfcfc; max-height:75vh; overflow-y:auto;">
-               @if($oro && $plata && $bronce)
+        <div style="padding:30px; background:#fcfcfc; max-height:75vh; overflow-y:auto;">
+            @if($oro && $plata && $bronce)
+                @php
+                    $podioImgs = [
+                        asset($plata->ruta),
+                        asset($oro->ruta),
+                        asset($bronce->ruta)
+                    ];
+                @endphp
 
+                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:15px; margin-bottom:40px;">
+                    {{-- PLATA --}}
+                    <div style="text-align:center;">
+                        <img 
+                            src="{{ asset($plata->ruta) }}" 
+                            @click="openGallery(@js($podioImgs), 0)"
+                            style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:20px; border:3px solid #cbd5e1; cursor:pointer;"
+                        >
+                    </div>
+
+                    {{-- ORO --}}
+                    <div style="text-align:center; transform: translateY(-15px);">
+                        <img 
+                            src="{{ asset($oro->ruta) }}" 
+                            @click="openGallery(@js($podioImgs), 1)"
+                            style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:20px; border:4px solid #facc15; cursor:pointer; box-shadow:0 15px 30px rgba(250,204,21,0.3);"
+                        >
+                    </div>
+
+                    {{-- BRONCE --}}
+                    <div style="text-align:center;">
+                        <img 
+                            src="{{ asset($bronce->ruta) }}" 
+                            @click="openGallery(@js($podioImgs), 2)"
+                            style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:20px; border:3px solid #fb923c; cursor:pointer;"
+                        >
+                    </div>
+                </div>
+
+            @elseif($ganadores)
+                <div style="position:relative; margin-bottom:35px; border-radius:24px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.15); background: transparent;">
                     @php
-                        $podioImgs = [
-                            asset($plata->ruta),
-                            asset($oro->ruta),
-                            asset($bronce->ruta)
-                        ];
+                        $ganadoresArr = [asset($ganadores->ruta)];
                     @endphp
+                    <img src="{{ asset($ganadores->ruta) }}" @click="openGallery(@js($ganadoresArr), 0)" style="width:100%; object-fit:cover;">
+                </div>
+            @endif
 
-                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:15px; margin-bottom:40px;">
-                        
-                        {{-- PLATA --}}
-                        <div style="text-align:center;">
-                            <img 
-                                src="{{ asset($plata->ruta) }}" 
-                                @click="openGallery(@js($podioImgs), 0)"
-                                style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:20px; border:3px solid #cbd5e1; cursor:pointer;"
-                            >
-                        </div>
-
-                        {{-- ORO --}}
-                        <div style="text-align:center; transform: translateY(-15px);">
-                            <img 
-                                src="{{ asset($oro->ruta) }}" 
-                                @click="openGallery(@js($podioImgs), 1)"
-                                style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:20px; border:4px solid #facc15; cursor:pointer; box-shadow:0 15px 30px rgba(250,204,21,0.3);"
-                            >
-                        </div>
-
-                        {{-- BRONCE --}}
-                        <div style="text-align:center;">
-                            <img 
-                                src="{{ asset($bronce->ruta) }}" 
-                                @click="openGallery(@js($podioImgs), 2)"
-                                style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:20px; border:3px solid #fb923c; cursor:pointer;"
-                            >
-                        </div>
-
+            @foreach ($top as $categoriaId => $items)
+                <div style="background:white; border-radius:24px; padding:25px; margin-bottom:25px; border:1px solid #f1f5f9; box-shadow:0 10px 15px -3px rgba(0,0,0,0.05);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                        <h3 style="margin:0; font-weight:900; color:#002c53; font-size:1.3rem;">🏷️ {{ optional($items->first()->categoria)->nombre }}</h3>
+                        <flux:button variant="ghost" wire:click="openResultados({{ $categoriaId }})" style="color:#002c53; font-weight:800;">Ver Tabla Completa</flux:button>
                     </div>
-
-                @elseif($ganadores)
-                <div style="
-                    position:relative; 
-                    margin-bottom:35px; 
-                    border-radius:24px; 
-                    overflow:hidden; 
-                    box-shadow:0 10px 30px rgba(0,0,0,0.15);
-                    background: transparent; /* 👈 aquí el cambio */
-                ">
-                     @php
-                    $ganadoresArr = [asset($ganadores->ruta)];
-                    @endphp
-
-                    <img src="{{ asset($ganadores->ruta) }}"
-                    @click="openGallery(@js($ganadoresArr), 0)">
-
-                    </div>
-                @endif
-
-                @foreach ($top as $categoriaId => $items)
-                    <div style="background:white; border-radius:24px; padding:25px; margin-bottom:25px; border:1px solid #f1f5f9; box-shadow:0 10px 15px -3px rgba(0,0,0,0.05);">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                            <h3 style="margin:0; font-weight:900; color:#002c53; font-size:1.3rem;">🏷️ {{ optional($items->first()->categoria)->nombre }}</h3>
-                            <flux:button variant="ghost" wire:click="openResultados({{ $categoriaId }})" style="color:#002c53; font-weight:800;">Ver Tabla Completa</flux:button>
-                        </div>
-                        <div class="podium-container">
-                           @foreach([2, 1, 3] as $rank)
+                    <div class="podium-container">
+                        @foreach([2, 1, 3] as $rank)
                             @php
                                 $participantes = $items->filter(function($p) use ($posiciones, $rank) {
                                     return $posiciones->has($p->jugador_id) && 
-                                        $posiciones->get($p->jugador_id)->first()->posicion == $rank;
+                                           $posiciones->get($p->jugador_id)->first()->posicion == $rank;
                                 });
-
                                 $equipos = $participantes->groupBy('equipo_id');
                             @endphp
 
@@ -284,98 +444,169 @@ x-data="{
                                 <div style="font-size:28px; margin-bottom:5px;">
                                     {{ match($rank){1=>'🥇', 2=>'🥈', 3=>'🥉'} }}
                                 </div>
-
                                 @if($equipos->count())
-
                                     @foreach($equipos as $equipoId => $jugadores)
-                                        
                                         <div style="margin-bottom:6px;">
-
-                                            {{-- Nombre del equipo --}}
                                             <div style="font-size:11px; font-weight:800; color:#64748b;">
                                                 {{ optional($jugadores->first()->equipo)->nombre ?? 'Individual' }}
                                             </div>
-
-                                            {{-- Jugadores --}}
                                             @foreach($jugadores as $jugador)
                                                 <div style="font-size:13px; font-weight:900; color:#002c53;">
                                                     {{ $jugador->jugador->nombre }} {{ $jugador->jugador->apellido }}
                                                 </div>
                                             @endforeach
-
                                         </div>
-
                                     @endforeach
-
                                 @else
                                     <div style="font-size:10px; opacity:0.3; font-weight:bold;">—</div>
                                 @endif
                             </div>
-
                         @endforeach
-                        </div>
                     </div>
-                @endforeach
-
-                <div style="white-space:pre-line; color:#475569; line-height:1.7; padding:25px; background:#fff; border-radius:20px; border:1px solid #f1f5f9; margin-bottom:30px;">
-                    {{ $torneoSeleccionado->descripcion }}
                 </div>
+            @endforeach
 
-               <div style="display:flex; flex-direction:column; gap:30px;">
+            <div style="white-space:pre-line; color:#475569; line-height:1.7; padding:25px; background:#fff; border-radius:20px; border:1px solid #f1f5f9; margin-bottom:30px;">
+                {{ $torneoSeleccionado->descripcion }}
+            </div>
 
-    @foreach ([
-        'imagen_talleres' => '🎓 Proceso de formación',
-        'imagen_torneos' => '🏆 Desarrollo del torneo'
-    ] as $tipo => $titulo)
-
-        @if ($imagenes->where('tipo', $tipo)->count())
-            <div>
-                
-                {{-- TÍTULO --}}
-                <h4 style="color:#002c53; font-weight:800; margin-bottom:15px; font-size:15px;">
-                    {{ $titulo }}
-                </h4>
-
-                {{-- GALERÍA --}}
-                <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">
-                    
-                    @php
-                        $imgsArray = $imagenes->where('tipo', $tipo)
-                            ->pluck('ruta')
-                            ->map(fn($r) => asset($r))
-                            ->values();
-                        @endphp
-
-                        @foreach ($imgsArray as $i => $img)
-                            <div 
-                                style="width:120px; height:110px; border-radius:16px; overflow:hidden; cursor:pointer;"
-                                @click="openGallery(@js($imgsArray), {{ $i }})"
-                            >
-                                <img 
-                                    src="{{ $img }}" 
-                                    style="width:100%; height:100%; object-fit:cover;"
-                                >
+            <div style="display:flex; flex-direction:column; gap:30px;">
+                @foreach (['imagen_talleres' => '🎓 Proceso de formación', 'imagen_torneos' => '🏆 Desarrollo del torneo'] as $tipo => $titulo)
+                    @if ($imagenes->where('tipo', $tipo)->count())
+                        <div>
+                            <h4 style="color:#002c53; font-weight:800; margin-bottom:15px; font-size:15px;">{{ $titulo }}</h4>
+                            <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">
+                                @php
+                                    $imgsArray = $imagenes->where('tipo', $tipo)->pluck('ruta')->map(fn($r) => asset($r))->values();
+                                @endphp
+                                @foreach ($imgsArray as $i => $img)
+                                    <div style="width:120px; height:110px; border-radius:16px; overflow:hidden; cursor:pointer;" @click="openGallery(@js($imgsArray), {{ $i }})">
+                                        <img src="{{ $img }}" style="width:100%; height:100%; object-fit:cover;">
+                                    </div>
+                                @endforeach
                             </div>
-                        @endforeach
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        </div>
 
+        <div style="padding:20px; text-align:right; background:#f1f5f9; border-top:1px solid #e2e8f0;">
+            <flux:modal.close>
+                <flux:button variant="filled" style="background:#002c53; color:white; padding:10px 30px; border-radius:12px;">Cerrar Detalle</flux:button>
+            </flux:modal.close>
+        </div>
+
+    {{-- NUEVA SECCIÓN: POR REALIZARSE --}}
+    {{-- NUEVA SECCIÓN: POR REALIZARSE --}}
+@elseif($torneoSeleccionado && $torneoSeleccionado->estado === 'por_realizarse')
+    @php
+        $registrados = $torneoSeleccionado->participaciones->map(function($p) {
+            return [
+                'nombre' => $p->jugador->nombre . ' ' . $p->jugador->apellido,
+                'equipo' => optional($p->equipo)->nombre ?? 'Individual',
+                'categoria' => optional($p->categoria)->nombre ?? 'General',
+                'genero' => $p->jugador->genero, // Lectura directa del campo
+                'edad' => $p->jugador->edad . ' años',
+                'search' => strtolower($p->jugador->nombre . ' ' . $p->jugador->apellido . ' ' . (optional($p->equipo)->nombre ?? '') . ' ' . (optional($p->categoria)->nombre ?? ''))
+            ];
+        })->sortBy('nombre')->values();
+    @endphp
+
+    <div style="background: linear-gradient(135deg, #002c53 0%, #1e40af 100%); padding:40px 30px; color:white;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <flux:heading size="xl" style="color:white !important; font-weight:900; margin:0;">{{ $torneoSeleccionado->nombre }}</flux:heading>
+                <div style="background: #facc15; color: #002c53; display: inline-block; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; margin-top: 10px; text-transform: uppercase;">
+                    Próximo Evento ⏳
                 </div>
-
             </div>
-        @endif
-
-    @endforeach
-
-</div>
-
+            <div style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 15px 25px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.2);">
+                <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; opacity: 0.9;">Total Inscritos</div>
+                <div style="font-size: 28px; font-weight: 900;">{{ $registrados->count() }}</div>
             </div>
-            
-            <div style="padding:20px; text-align:right; background:#f1f5f9; border-top:1px solid #e2e8f0;">
-                <flux:modal.close>
-                    <flux:button variant="filled" style="background:#002c53; color:white; padding:10px 30px; border-radius:12px;">Cerrar Detalle</flux:button>
-                </flux:modal.close>
+        </div>
+    </div>
+
+    <div style="padding:30px; background:#fcfcfc; max-height:75vh; overflow-y:auto;" 
+         x-data="{ 
+            search: '', 
+            jugadores: @js($registrados),
+            get filteredJugadores() {
+                return this.jugadores.filter(j => j.search.includes(this.search.toLowerCase()))
+            }
+         }">
+        
+        <div style="margin-bottom: 35px;">
+            <h4 style="color:#002c53; font-weight:800; margin-bottom:12px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                <span>📝</span> Detalles del Torneo
+            </h4>
+            <div style="white-space:pre-line; color:#475569; line-height:1.6; padding:20px; background:white; border-radius:15px; border:1px solid #e2e8f0;">
+                {{ $torneoSeleccionado->descripcion }}
             </div>
-        @endif
-    </flux:modal>
+        </div>
+
+        <div style="background: white; border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <div style="padding: 20px; border-bottom: 1px solid #f1f5f9; background: #fafafa; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
+                <h4 style="margin:0; color:#002c53; font-weight:800;">👥 Jugadores Confirmados</h4>
+                <div style="position: relative; width: 100%; max-width: 300px;">
+                    <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;">🔍</span>
+                    <input x-model="search" type="text" placeholder="Buscar por nombre o apellido" 
+                           style="width: 100%; padding: 10px 15px 10px 35px; border-radius: 12px; border: 1px solid #e2e8f0; font-size: 13px; outline: none;">
+                </div>
+            </div>
+
+            @if($registrados->count() > 0)
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
+                        <thead style="background: #f8fafc; color: #64748b; font-weight: 700; text-transform: uppercase; font-size: 11px;">
+                            <tr>
+                                <th style="padding: 15px 20px;">Jugador / Equipo</th>
+                                <th style="padding: 15px 20px;">Género</th>
+                                <th style="padding: 15px 20px;">Edad</th>
+                                <th style="padding: 15px 20px;">Categoría</th>
+                            </tr>
+                        </thead>
+                        <tbody style="color: #334155;">
+                            <template x-for="j in filteredJugadores" :key="j.nombre">
+                                <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+                                    <td style="padding: 15px 20px;">
+                                        <div style="font-weight: 800; color: #002c53;" x-text="j.nombre"></div>
+                                        <div style="font-size: 11px; color: #94a3b8;" x-text="j.equipo"></div>
+                                    </td>
+                                    <td style="padding: 15px 20px;">
+                                        <span style="padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600;" 
+                                              :style="j.genero === 'masculino' ? 'background:#e0f2fe; color:#0369a1;' : (j.genero === 'femenino' ? 'background:#fce7f3; color:#be185d;' : '')"
+                                              x-text="j.genero"></span>
+                                    </td>
+                                    <td style="padding: 15px 20px; font-weight: 600;" x-text="j.edad"></td>
+                                    <td style="padding: 15px 20px;">
+                                        <div style="background: #f1f5f9; padding: 4px 10px; border-radius: 8px; display: inline-block; font-size: 12px; font-weight: 700; color: #475569;" x-text="j.categoria"></div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+                <div x-show="filteredJugadores.length === 0" style="padding: 40px; text-align: center; color: #94a3b8;">
+                    <p style="font-weight: 600;">No se encontraron resultados para su búsqueda.</p>
+                </div>
+            @else
+                <div style="padding: 60px 20px; text-align: center; color: #64748b;">
+                    <div style="font-size: 40px; margin-bottom: 15px;">♟️</div>
+                    <h5 style="margin:0; font-weight: 800; color: #002c53;">¡Pronto se anunciarán los participantes!</h5>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <div style="padding:20px; text-align:right; background:#f1f5f9; border-top:1px solid #e2e8f0;">
+        <flux:modal.close>
+            <flux:button variant="filled" style="background:#002c53; color:white; padding:10px 30px; border-radius:12px;">Cerrar</flux:button>
+        </flux:modal.close>
+    </div>
+@endif
+</flux:modal>
 
 
     {{-- MODAL TABLA DE RESULTADOS --}}

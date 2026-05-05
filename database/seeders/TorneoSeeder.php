@@ -22,6 +22,7 @@ Clasificaron 8 jugadores a la fase final. En semifinales, Víctor Álvarez venci
             'fecha_fin' => '2022-12-23',
             'lugar' => 'Cubil Protejo Mi Comunidad',
             'tipo' => 'interno',
+            'estado' => 'finalizado',
         ]);
 
         Torneo::create([
@@ -35,6 +36,7 @@ El equipo campeón fue “Los Chapines”, conformado por Alejandro, Fabián, Jo
             'fecha_fin' => '2023-06-28',
             'lugar' => 'Cubil Protejo Mi Comunidad',
             'tipo' => 'interno',
+            'estado' => 'finalizado',
         ]);
 
         Torneo::create([
@@ -48,6 +50,7 @@ Daniel Solís se consagró campeón, logrando su primer título tras haber obten
             'fecha_fin' => '2023-12-15',
             'lugar' => 'Cubil Protejo Mi Comunidad',
             'tipo' => 'interno',
+            'estado' => 'finalizado',
         ]);
 
         Torneo::create([
@@ -61,6 +64,7 @@ El torneo fue muy competitivo, con varios jugadores disputando el título. Final
             'fecha_fin' => '2024-07-05',
             'lugar' => 'Cubil Protejo Mi Comunidad',
             'tipo' => 'interno',
+            'estado' => 'finalizado',
         ]);
 
         Torneo::create([
@@ -76,6 +80,7 @@ Juan Diego Pacheco fue la sorpresa del torneo al quedarse con el bronce. Daniel 
             'fecha_fin' => '2025-06-26',
             'lugar' => 'Cubil Protejo Mi Comunidad',
             'tipo' => 'interno',
+            'estado' => 'finalizado',
         ]);
 
         Torneo::create([
@@ -89,6 +94,7 @@ David Nájera se consagró campeón, logrando su segundo título y tercera medal
             'fecha_fin' => '2025-12-12',
             'lugar' => 'Cubil Protejo Mi Comunidad',
             'tipo' => 'interno',
+            'estado' => 'finalizado',
         ]);
 
         Torneo::create([
@@ -104,6 +110,7 @@ El tercer lugar fue muy disputado entre Daniel Solís, Emily Aguilar y Christoph
             'fecha_fin' => '2025-12-30',
             'lugar' => 'Cubil Protejo Mi Comunidad',
             'tipo' => 'interno',
+            'estado' => 'finalizado',
         ]);
 
         Torneo::create([
@@ -121,6 +128,7 @@ En sub-10, Emiliano Pacheco ganó el título con puntaje perfecto. Esteban Abril
             'fecha_fin' => '2026-02-14',
             'lugar' => 'Cubil Protejo Mi Comunidad',
             'tipo' => 'interno',
+            'estado' => 'finalizado',
         ]);
 
         Torneo::create([
@@ -140,6 +148,7 @@ En cuarto lugar quedó el equipo Gambitos conformado por Juan Diego Pacheco, Ale
             'fecha_fin' => '2026-03-28',
             'lugar' => 'Cubil Protejo Mi Comunidad',
             'tipo' => 'interno',
+            'estado' => 'finalizado',
         ]);
 
         Torneo::create([

@@ -79,4 +79,8 @@ class TorneosProtejo extends Component
     {
         return view('livewire.sistema.protejo-mi-mente.torneos-protejo');
     }
+
+    
+
+    
 }

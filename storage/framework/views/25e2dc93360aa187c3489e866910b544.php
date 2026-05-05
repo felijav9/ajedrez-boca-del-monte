@@ -2,10 +2,10 @@
     <style>
         .main-footer {
             width: 100%;
-            padding: 30px 16px; /* Bajé el padding para que sea más compacto */
+            padding: 25px 20px;
             background: #f8fafc;
             border-top: 1px solid #e2e8f0;
-            margin-top: -20px; /* Margen negativo para subirlo un poco respecto al contenido superior */
+            margin-top: -20px;
             font-family: ui-sans-serif, system-ui, sans-serif;
             position: relative;
             z-index: 10;
@@ -18,7 +18,7 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 20px;
         }
 
         .footer-left {
@@ -39,25 +39,29 @@
         .footer-right {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
         .contact-group {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .contact-link {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             text-decoration: none;
             color: #002c53;
             font-weight: 700;
             font-size: 13px;
             transition: all 0.3s ease;
+            white-space: nowrap; /* Evita que el correo se parta en dos líneas */
         }
 
         .contact-link:hover { color: #10b981; transform: translateY(-1px); }
@@ -65,7 +69,7 @@
         .badge {
             background: #002c53;
             color: #facc15;
-            padding: 5px 12px;
+            padding: 5px 14px;
             border-radius: 99px;
             font-size: 10px;
             font-weight: 900;
@@ -74,11 +78,43 @@
             box-shadow: 0 4px 6px rgba(0, 44, 83, 0.1);
         }
 
-        @media (max-width: 900px) {
-            .footer-content { flex-direction: column; text-align: center; }
-            .contact-group { flex-direction: column; gap: 8px; }
-            .footer-left { flex-direction: column; gap: 5px; }
-            .footer-left .divider { display: none; }
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 850px) {
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 25px;
+            }
+            
+            .footer-left {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .footer-left .divider {
+                display: none;
+            }
+
+            .footer-right {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .contact-group {
+                flex-direction: row; /* En tablets mantenemos los iconos a los lados */
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .contact-group {
+                flex-direction: column; /* En móviles pequeños, uno encima de otro */
+                gap: 12px;
+            }
+            
+            .contact-link {
+                font-size: 14px; /* Un poco más grande para facilitar el clic con el dedo */
+            }
         }
 
         @media (prefers-color-scheme: dark) {
@@ -114,4 +150,4 @@
             </div>
         </div>
     </footer>
-</div> <?php /**PATH C:\laragon\www\Sistema\resources\views/livewire/sistema/protejo-mi-mente/footer.blade.php ENDPATH**/ ?>
+</div><?php /**PATH C:\laragon\www\Sistema\resources\views/livewire/sistema/protejo-mi-mente/footer.blade.php ENDPATH**/ ?>
