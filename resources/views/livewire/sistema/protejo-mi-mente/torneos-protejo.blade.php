@@ -534,6 +534,15 @@ x-data="{
                 return this.jugadores.filter(j => j.search.includes(this.search.toLowerCase()))
             }
          }">
+
+         {{-- Texto --}}
+    <div>
+        <h4 style="margin: 0; color: #002c53; font-weight: 800; font-size: 17px; letter-spacing: -0.025em; line-height: 1.2;">
+            Jugadores Confirmados
+        </h4>
+        
+    </div>
+    
         
         <div style="margin-bottom: 35px;">
             <h4 style="color:#002c53; font-weight:800; margin-bottom:12px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
@@ -582,13 +591,7 @@ x-data="{
             </svg>
         </div>
 
-    {{-- Texto --}}
-    <div>
-        <h4 style="margin: 0; color: #002c53; font-weight: 800; font-size: 17px; letter-spacing: -0.025em; line-height: 1.2;">
-            Jugadores Confirmados
-        </h4>
-        
-    </div>
+    
 </div>
 
         {{-- Lado Derecho: Botón Estilizado --}}
