@@ -109,5 +109,14 @@ class ProtejoMiMenteEventosSeeder extends Seeder
             'permission_name' => 'page.view.protejo-mi-mente.registro-clasificaciones-evento',
             'page_id' => $paginaAjedrez->id
         ]);
+
+
+        Page::where(
+            'route',
+            'protejo-mi-mente.registro-resultados-individuales'
+        )->update([
+            'order' => 6
+        ]);
+
     }
 }
