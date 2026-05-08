@@ -25,12 +25,6 @@ return new class extends Migration
 
             $table->enum('medalla', ['gold', 'silver', 'bronze'])->nullable();
 
-            // NUEVO CAMPO
-             $table->foreignId('torneo_evento_id')
-            ->nullable()
-            ->constrained('torneo_eventos')
-            ->onDelete('cascade');
-
             $table->timestamps();
         });
     }
