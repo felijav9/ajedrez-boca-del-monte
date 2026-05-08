@@ -71,7 +71,7 @@ class ProtejoMiMenteEventosSeeder extends Seeder
         ], [
             'label' => 'Registro eventos torneo',
             'icon' => 'document-text',
-            'order' => 6,
+            'order' => 7,
             'type' => 'page',
             'permission_name' => 'page.view.protejo-mi-mente.registro-eventos-torneo',
             'page_id' => $paginaAjedrez->id
@@ -82,7 +82,7 @@ class ProtejoMiMenteEventosSeeder extends Seeder
         ], [
             'label' => 'Registro rondas',
             'icon' => 'document-text',
-            'order' => 7,
+            'order' => 8,
             'type' => 'page',
             'permission_name' => 'page.view.protejo-mi-mente.registro-rondas',
             'page_id' => $paginaAjedrez->id
@@ -93,7 +93,7 @@ class ProtejoMiMenteEventosSeeder extends Seeder
         ], [
             'label' => 'Registro partidas',
             'icon' => 'document-text',
-            'order' => 8,
+            'order' => 9,
             'type' => 'page',
             'permission_name' => 'page.view.protejo-mi-mente.registro-partidas',
             'page_id' => $paginaAjedrez->id
@@ -104,7 +104,7 @@ class ProtejoMiMenteEventosSeeder extends Seeder
         ], [
             'label' => 'Clasificaciones evento',
             'icon' => 'document-text',
-            'order' => 9,
+            'order' => 10,
             'type' => 'page',
             'permission_name' => 'page.view.protejo-mi-mente.registro-clasificaciones-evento',
             'page_id' => $paginaAjedrez->id
