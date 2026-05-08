@@ -32,6 +32,14 @@ return new class extends Migration
                 ->constrained('categorias')
                 ->nullOnDelete();
 
+            // nuevo campo
+
+            $table->foreignId('torneo_evento_id')
+            ->nullable()
+            ->constrained('torneo_eventos')
+            ->onDelete('cascade');
+
+
             $table->timestamps();
         });
     }

@@ -685,7 +685,7 @@ Cerrar Detalle <?php echo $__env->renderComponent(); ?>
                 'nombre' => $p->jugador->nombre . ' ' . $p->jugador->apellido,
                 'equipo' => optional($p->equipo)->nombre ?? 'Individual',
                 'categoria' => optional($p->categoria)->nombre ?? 'General',
-                'genero' => $p->jugador->genero, // Lectura directa del campo
+                'genero' => $p->jugador->genero,
                 'edad' => $p->jugador->edad . ' años',
                 'search' => strtolower($p->jugador->nombre . ' ' . $p->jugador->apellido . ' ' . (optional($p->equipo)->nombre ?? '') . ' ' . (optional($p->categoria)->nombre ?? ''))
             ];
@@ -720,7 +720,6 @@ Cerrar Detalle <?php echo $__env->renderComponent(); ?>
                     Próximo Evento ⏳
                 </div>
             </div>
-            
         </div>
     </div>
 
@@ -732,90 +731,91 @@ Cerrar Detalle <?php echo $__env->renderComponent(); ?>
                 return this.jugadores.filter(j => j.search.includes(this.search.toLowerCase()))
             }
          }">
+
+        
+        <div style="
+            background: white; 
+            border-radius: 24px; 
+            border: 1px solid #f1f5f9; 
+            overflow: hidden; 
+            box-shadow: 0 10px 25px -5px rgba(0, 44, 83, 0.08);
+            transition: transform 0.3s ease;
+            margin-bottom: 35px;
+        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+
+            <div style="
+                display: flex; 
+                justify-content: space-between; 
+                align-items: center; 
+                padding: 20px 24px;
+                background: linear-gradient(to right, #ffffff, #f8fafc);
+            ">
+
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div style="
+                        background: #002c53; 
+                        width: 45px; 
+                        height: 45px; 
+                        border-radius: 14px; 
+                        display: flex; 
+                        align-items: center; 
+                        justify-content: center;
+                        box-shadow: 0 4px 10px rgba(0, 44, 83, 0.15);
+                    ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="15" cy="7" r="3"/>
+                            <path d="M11 21v-3a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v3"/>
+                            <circle cx="7" cy="7" r="3"/>
+                            <path d="M3 21v-2a4 4 0 0 1 4-4h2"/>
+                        </svg>
+                    </div>
+
+                    <div>
+                        <h4 style="margin: 0; color: #002c53; font-weight: 800; font-size: 17px; letter-spacing: -0.025em; line-height: 1.2;">
+                            Jugadores Confirmados
+                        </h4>
+                    </div>
+                </div>
+
+                <button 
+                    x-on:click="$flux.modal('jugadores-confirmados').show()"
+                    style="
+                        background: #002c53; 
+                        color: #facc15; 
+                        padding: 10px 18px; 
+                        border-radius: 12px; 
+                        font-size: 13px; 
+                        font-weight: 700; 
+                        border: none;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        transition: all 0.2s ease;
+                        box-shadow: 0 4px 12px rgba(0, 44, 83, 0.2);
+                    "
+                    onmouseover="this.style.background='#003d73'; this.style.boxShadow='0 6px 15px rgba(0, 44, 83, 0.3)'"
+                    onmouseout="this.style.background='#002c53'; this.style.boxShadow='0 4px 12px rgba(0, 44, 83, 0.2)'"
+                >
+                    <span>Ver lista</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14m-7-7 7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
         
         <div style="margin-bottom: 35px;">
             <h4 style="color:#002c53; font-weight:800; margin-bottom:12px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
                 <span>📝</span> Detalles del Torneo
             </h4>
+
             <div style="white-space:pre-line; color:#475569; line-height:1.6; padding:20px; background:white; border-radius:15px; border:1px solid #e2e8f0;">
                 <?php echo e($torneoSeleccionado->descripcion); ?>
 
             </div>
         </div>
-
-        <div style="
-    background: white; 
-    border-radius: 24px; 
-    border: 1px solid #f1f5f9; 
-    overflow: hidden; 
-    box-shadow: 0 10px 25px -5px rgba(0, 44, 83, 0.08);
-    transition: transform 0.3s ease;
-" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-    
-    <div style="
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center; 
-        padding: 20px 24px;
-        background: linear-gradient(to right, #ffffff, #f8fafc);
-    ">
-        
-      
-        <div style="display: flex; align-items: center; gap: 14px;">
-    
-    <div style="
-            background: #002c53; 
-            width: 45px; 
-            height: 45px; 
-            border-radius: 14px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(0, 44, 83, 0.15);
-        ">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="15" cy="7" r="3"/>
-                <path d="M11 21v-3a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v3"/>
-                <circle cx="7" cy="7" r="3"/>
-                <path d="M3 21v-2a4 4 0 0 1 4-4h2"/>
-            </svg>
-        </div>
-
-    
-    <div>
-        <h4 style="margin: 0; color: #002c53; font-weight: 800; font-size: 17px; letter-spacing: -0.025em; line-height: 1.2;">
-            Jugadores Confirmados
-        </h4>
-        
-    </div>
-</div>
-
-        
-        <button 
-            x-on:click="$flux.modal('jugadores-confirmados').show()"
-            style="
-                background: #002c53; 
-                color: #facc15; 
-                padding: 10px 18px; 
-                border-radius: 12px; 
-                font-size: 13px; 
-                font-weight: 700; 
-                border: none;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                transition: all 0.2s ease;
-                box-shadow: 0 4px 12px rgba(0, 44, 83, 0.2);
-            "
-            onmouseover="this.style.background='#003d73'; this.style.boxShadow='0 6px 15px rgba(0, 44, 83, 0.3)'"
-            onmouseout="this.style.background='#002c53'; this.style.boxShadow='0 4px 12px rgba(0, 44, 83, 0.2)'"
-        >
-            <span>Ver lista</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
-        </button>
-    </div>
-</div>
     </div>
 
     <div style="padding:20px; text-align:right; background:#f1f5f9; border-top:1px solid #e2e8f0;">
@@ -842,7 +842,9 @@ Cerrar Detalle <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php $component->withAttributes(['variant' => 'filled','style' => 'background:#002c53; color:white; padding:10px 30px; border-radius:12px;']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-Cerrar <?php echo $__env->renderComponent(); ?>
+
+                Cerrar
+             <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580)): ?>
 <?php $attributes = $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>

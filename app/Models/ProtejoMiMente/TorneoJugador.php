@@ -14,7 +14,9 @@ class TorneoJugador extends Model
         'torneo_id',
         'jugador_id',
         'equipo_id',
-        'categoria_id'
+        'categoria_id',
+        'torneo_evento_id'
+
     ];
 
     public function categoria()
@@ -35,5 +37,9 @@ class TorneoJugador extends Model
     public function equipo()
     {
         return $this->belongsTo(Equipo::class);
+    }
+    public function torneoEvento()
+    {
+        return $this->belongsTo(TorneoEvento::class);
     }
 }

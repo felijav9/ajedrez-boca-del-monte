@@ -19,10 +19,11 @@ class RegistroTorneos extends Component
         ['index' => 'fechas', 'label' => 'Fechas'],
         ['index' => 'lugar', 'label' => 'Lugar'],
         ['index' => 'tipo', 'label' => 'Tipo'], // 👈 NUEVO
+        ['index' => 'estado', 'label' => 'Estado'],
         ['index' => 'actions', 'label' => ''],
     ];
 
-    public $nombre, $descripcion, $fecha_inicio, $fecha_fin, $lugar, $tipo = 'interno';
+    public $nombre, $descripcion, $fecha_inicio, $fecha_fin, $lugar, $tipo = 'interno', $estado = 'por_realizarse';
     public $torneo_id;
 
     public $selectedTorneo;
@@ -58,6 +59,7 @@ class RegistroTorneos extends Component
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date',
             'tipo' => 'required|in:interno,externo',
+            'estado' => 'required|in:por_realizarse,en_curso,finalizado',
         ]);
 
         Torneo::create([
@@ -67,6 +69,8 @@ class RegistroTorneos extends Component
             'fecha_fin' => $this->fecha_fin,
             'lugar' => $this->lugar,
             'tipo' => $this->tipo, // 👈 NUEVO
+             'estado' => $this->estado,
+
         ]);
 
         $this->toastSuccess('Torneo creado');
@@ -85,6 +89,7 @@ class RegistroTorneos extends Component
         $this->fecha_fin = $t->fecha_fin;
         $this->lugar = $t->lugar;
         $this->tipo = $t->tipo; // 👈 NUEVO
+        $this->estado = $t->estado;
 
         Flux::modal('torneo-form')->show();
     }
@@ -98,6 +103,7 @@ class RegistroTorneos extends Component
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date',
             'tipo' => 'required|in:interno,externo',
+            'estado' => 'required|in:por_realizarse,en_curso,finalizado',
         ]);
 
         $t->update([
@@ -106,7 +112,9 @@ class RegistroTorneos extends Component
             'fecha_inicio' => $this->fecha_inicio,
             'fecha_fin' => $this->fecha_fin,
             'lugar' => $this->lugar,
-            'tipo' => $this->tipo, // 👈 NUEVO
+            'tipo' => $this->tipo, // 👈 
+            'estado' => $this->estado,
+
         ]);
 
         $this->toastSuccess('Actualizado');
@@ -143,9 +151,11 @@ class RegistroTorneos extends Component
             'fecha_fin',
             'lugar',
             'torneo_id',
-            'tipo'
+            'tipo',
+            'estado'
         ]);
 
-        $this->tipo = 'interno'; // 👈 default
+       $this->tipo = 'interno';
+        $this->estado = 'por_realizarse';
     }
 }

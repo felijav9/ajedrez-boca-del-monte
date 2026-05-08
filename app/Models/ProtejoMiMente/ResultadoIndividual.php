@@ -14,7 +14,8 @@ class ResultadoIndividual extends Model
         'torneo_id',
         'jugador_id',
         'posicion',
-        'medalla'
+        'medalla',
+        'torneo_evento_id'
     ];
     public function torneo()
     {
@@ -28,5 +29,9 @@ class ResultadoIndividual extends Model
         public function equipo()
     {
         return $this->belongsTo(Equipo::class);
+    }
+    public function torneoEvento()
+    {
+        return $this->belongsTo(TorneoEvento::class);
     }
 }

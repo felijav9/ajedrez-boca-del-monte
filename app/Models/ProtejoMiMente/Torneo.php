@@ -20,6 +20,7 @@ class Torneo extends Model
         'fecha_fin',
         'lugar',
         'tipo',
+        'estado',
     ];
 
     public function jugadores()
