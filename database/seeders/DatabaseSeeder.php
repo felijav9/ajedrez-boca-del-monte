@@ -23,15 +23,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            JugadorSeeder::class,
-            TorneoSeeder::class,
-            EquipoSeeder::class,
-            CategoriaSeeder::class,
-            TorneoJugadorSeeder::class,
-            ResultadoIndividualSeeder::class,
-            ImagenTorneosSeeder::class
-        ]);
+        
         // AREAS
         Area::create([
             'name' => 'Gerencia de Desarrollo Social',
@@ -255,6 +247,8 @@ class DatabaseSeeder extends Seeder
             'permission_name' => 'page.view.protejo-mi-mente.registro-resultados-individuales',
             'page_id' => $paginaAjedrez->id
         ]);
+
+        
 
 
 
@@ -1992,5 +1986,22 @@ class DatabaseSeeder extends Seeder
             'direccion' => '2 calle 1-02',
             'user_information_id' => 1
         ]);
+
+
+        $this->call([
+            JugadorSeeder::class,
+            TorneoSeeder::class,
+            EquipoSeeder::class,
+            CategoriaSeeder::class,
+            TorneoJugadorSeeder::class,
+            ResultadoIndividualSeeder::class,
+            ImagenTorneosSeeder::class,
+            ProtejoMiMenteEventosSeeder::class
+        ]);
+        
     }
+
+
+
+    
 }
