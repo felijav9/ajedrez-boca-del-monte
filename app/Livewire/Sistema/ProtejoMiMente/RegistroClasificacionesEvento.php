@@ -14,9 +14,8 @@ class RegistroClasificacionesEvento extends Component
     public $torneo_id = null;
     public $torneo_evento_id = null;
 
-    public bool $ordenGuardado = false;
+    public bool $modoGlobal = false;
 
-    // MODAL
     public bool $verPartidasModal = false;
     public $jugadorSeleccionado = null;
 
@@ -38,13 +37,13 @@ class RegistroClasificacionesEvento extends Component
     }
 
     /* =========================
-        PARTIDAS DEL EVENTO
+        PARTIDAS EVENTO
     ==========================*/
-    private function partidas(): Collection
+    private function partidasEvento(): Collection
     {
         if (!$this->torneo_evento_id) return collect();
 
-        return Partida::with(['ronda', 'blancas', 'negras'])
+        return Partida::with(['ronda.torneoEvento', 'blancas', 'negras'])
             ->whereHas('ronda', fn($q) =>
                 $q->where('torneo_evento_id', $this->torneo_evento_id)
             )
@@ -52,14 +51,27 @@ class RegistroClasificacionesEvento extends Component
     }
 
     /* =========================
-        CLASIFICACIÓN + EMPATES + PODIO
-        (CORRECTO PARA MEDALLAS)
+        PARTIDAS TORNEO (GLOBAL)
     ==========================*/
-    public function getClasificacionesProperty()
+    private function partidasTorneo(): Collection
+    {
+        if (!$this->torneo_id) return collect();
+
+        return Partida::with(['ronda.torneoEvento', 'blancas', 'negras'])
+            ->whereHas('ronda.torneoEvento', fn($q) =>
+                $q->where('torneo_id', $this->torneo_id)
+            )
+            ->get();
+    }
+
+    /* =========================
+        MOTOR DE PUNTOS
+    ==========================*/
+    private function calcularClasificacion($partidas)
     {
         $tabla = [];
 
-        foreach ($this->partidas() as $p) {
+        foreach ($partidas as $p) {
             foreach (['blancas', 'negras'] as $color) {
 
                 $j = $p->{$color};
@@ -74,13 +86,12 @@ class RegistroClasificacionesEvento extends Component
                     ];
                 }
 
-                // puntos
                 if ($p->resultado === '1-0' && $color === 'blancas') {
-                    $tabla[$id]['pts']++;
+                    $tabla[$id]['pts'] += 1;
                 }
 
                 if ($p->resultado === '0-1' && $color === 'negras') {
-                    $tabla[$id]['pts']++;
+                    $tabla[$id]['pts'] += 1;
                 }
 
                 if ($p->resultado === '0.5-0.5') {
@@ -89,39 +100,39 @@ class RegistroClasificacionesEvento extends Component
             }
         }
 
-        // ordenar por puntos
-        $collection = collect($tabla)
+        return collect($tabla)
             ->sortByDesc('pts')
-            ->values();
-
-        // =========================
-        // RANKING CON EMPATES + PODIO REAL
-        // =========================
-        $result = [];
-        $lastPts = null;
-        $rank = 0;
-        $position = 0;
-
-        foreach ($collection as $i => $c) {
-
-            if ($lastPts !== $c['pts']) {
-                $position++;
-                $rank = $position;
-                $lastPts = $c['pts'];
-            }
-
-            $result[] = [
-                'rank' => $rank,
-                'jugador' => $c['jugador'],
-                'pts' => $c['pts'],
-            ];
-        }
-
-        return collect($result);
+            ->values()
+            ->map(function ($c) {
+                return [
+                    'jugador' => $c['jugador'],
+                    'pts' => $c['pts'],
+                ];
+            });
     }
 
     /* =========================
-        PUBLICAR
+        EVENTO
+    ==========================*/
+    public function getClasificacionesProperty()
+    {
+        return $this->calcularClasificacion(
+            $this->partidasEvento()
+        );
+    }
+
+    /* =========================
+        GLOBAL
+    ==========================*/
+    public function getClasificacionesGlobalProperty()
+    {
+        return $this->calcularClasificacion(
+            $this->partidasTorneo()
+        );
+    }
+
+    /* =========================
+        PUBLICAR (NO BORRAR)
     ==========================*/
     public function publicar()
     {
@@ -133,19 +144,17 @@ class RegistroClasificacionesEvento extends Component
                     'jugador_id' => $c['jugador']->id,
                 ],
                 [
-                    'posicion' => $c['rank'],
+                    'posicion' => 0,
                     'pts' => $c['pts'],
                 ]
             );
         }
 
-        $this->ordenGuardado = true;
-
         $this->dispatch('toast', message: 'Clasificación publicada correctamente');
     }
 
     /* =========================
-        MODAL PARTIDAS
+        MODAL PARTIDAS AGRUPADAS POR EVENTO
     ==========================*/
     public function verPartidas($jugadorId)
     {
@@ -153,32 +162,32 @@ class RegistroClasificacionesEvento extends Component
         $this->verPartidasModal = true;
     }
 
-    public function getPartidasJugadorProperty()
+    public function getPartidasAgrupadasProperty()
     {
         if (!$this->jugadorSeleccionado) return collect();
 
-        return $this->partidas()
-            ->filter(function ($p) {
-                return $p->blancas_id == $this->jugadorSeleccionado
-                    || $p->negras_id == $this->jugadorSeleccionado;
-            })
-            ->sortBy(fn($p) => $p->ronda?->numero) // 👈 AQUÍ EL FIX
-            ->values();
+        $partidas = $this->modoGlobal
+            ? $this->partidasTorneo()
+            : $this->partidasEvento();
+
+        $filtradas = $partidas->filter(fn($p) =>
+            $p->blancas_id == $this->jugadorSeleccionado ||
+            $p->negras_id == $this->jugadorSeleccionado
+        );
+
+        return $filtradas->groupBy(function ($p) {
+            return $p->ronda?->torneoEvento?->nombre ?? 'Sin evento';
+        })->map(function ($grupo) {
+            return $grupo->sortBy(fn($p) => $p->ronda?->numero)->values();
+        });
     }
 
     /* ========================= */
     public function updatedTorneoId()
     {
         $this->torneo_evento_id = null;
-        $this->ordenGuardado = false;
     }
 
-    public function updatedTorneoEventoId()
-    {
-        $this->ordenGuardado = false;
-    }
-
-    /* ========================= */
     public function render()
     {
         return view('livewire.sistema.protejo-mi-mente.registro-clasificaciones-evento');
