@@ -3,6 +3,9 @@
 namespace App\Livewire\Sistema\ProtejoMiMente;
 
 use App\Models\ProtejoMiMente\Torneo;
+use App\Models\ProtejoMiMente\TorneoEvento;
+use App\Models\ProtejoMiMente\Partida;
+
 use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -12,12 +15,16 @@ class TorneosProtejo extends Component
 {
     use WithPagination;
 
+    public $categoriaSeleccionada = null;
     public $search = '';
     public $year = '2026';
     public $torneoSeleccionado = null;
 
-    // 🔥 NUEVO: categoría seleccionada para resultados
-    public $categoriaSeleccionada = null;
+    // 🔥 LIVE RESULTS
+    public $liveClasificaciones = [];
+
+    // 🆕 MODAL PARTIDAS
+    public $jugadorSeleccionado = null;
 
     public function updatingSearch()
     {
@@ -30,6 +37,9 @@ class TorneosProtejo extends Component
         $this->resetPage();
     }
 
+    // =========================
+    // TORNEOS
+    // =========================
     #[Computed]
     public function torneos()
     {
@@ -55,6 +65,9 @@ class TorneosProtejo extends Component
             ->paginate(9);
     }
 
+    // =========================
+    // OPEN TORNEO
+    // =========================
     public function openTorneo($id)
     {
         $this->torneoSeleccionado = Torneo::with([
@@ -62,25 +75,131 @@ class TorneosProtejo extends Component
             'resultados.jugador',
             'resultados.equipo',
             'participaciones.categoria',
-            'participaciones.equipo'
+            'participaciones.equipo',
         ])->find($id);
 
         Flux::modal('torneo-detalle')->show();
     }
 
-    // 🔥 NUEVO: abrir resultados por categoría
-    public function openResultados($categoriaId)
+    // =========================
+    // LIVE RESULTS (ARREGLADO)
+    // =========================
+    public function openLiveResults($torneoId)
     {
-        $this->categoriaSeleccionada = $categoriaId;
-        Flux::modal('resultados-categoria')->show();
+        $this->torneoSeleccionado = Torneo::findOrFail($torneoId);
+
+        // 🔥 TODOS los eventos (NO solo el último)
+        $eventos = TorneoEvento::where('torneo_id', $torneoId)->get();
+
+        if ($eventos->isEmpty()) {
+            $this->liveClasificaciones = collect();
+            Flux::modal('live-results')->show();
+            return;
+        }
+
+        $partidas = Partida::with(['ronda.torneoEvento', 'blancas', 'negras'])
+            ->whereHas('ronda', fn ($q) =>
+                $q->whereIn('torneo_evento_id', $eventos->pluck('id'))
+            )
+            ->get();
+
+        $tabla = [];
+
+        foreach ($partidas as $p) {
+
+            foreach (['blancas', 'negras'] as $color) {
+
+                $j = $p->{$color};
+                if (! $j) continue;
+
+                $id = $j->id;
+
+                if (! isset($tabla[$id])) {
+                    $tabla[$id] = [
+                        'jugador' => $j,
+                        'pts' => 0,
+                    ];
+                }
+
+                if ($p->resultado === '1-0' && $color === 'blancas') {
+                    $tabla[$id]['pts'] += 1;
+                }
+
+                if ($p->resultado === '0-1' && $color === 'negras') {
+                    $tabla[$id]['pts'] += 1;
+                }
+
+                if ($p->resultado === '0.5-0.5') {
+                    $tabla[$id]['pts'] += 0.5;
+                }
+            }
+        }
+
+        $this->liveClasificaciones = collect($tabla)
+            ->sortByDesc('pts')
+            ->values();
+
+        Flux::modal('live-results')->show();
     }
 
+    // =========================
+    // VER PARTIDAS (FIX)
+    // =========================
+    public function verPartidas($jugadorId)
+    {
+        $this->jugadorSeleccionado = $jugadorId;
+
+        Flux::modal('partidas-jugador')->show();
+    }
+
+    // =========================
+    // PARTIDAS AGRUPADAS (FIX REAL)
+    // =========================
+    #[Computed]
+    public function partidasAgrupadas()
+    {
+        if (! $this->jugadorSeleccionado || ! $this->torneoSeleccionado) {
+            return collect();
+        }
+
+        // 🔥 TODOS los eventos del torneo
+        $eventos = TorneoEvento::where('torneo_id', $this->torneoSeleccionado->id)->get();
+
+        if ($eventos->isEmpty()) {
+            return collect();
+        }
+
+        $partidas = Partida::with(['ronda.torneoEvento', 'blancas', 'negras'])
+            ->whereHas('ronda', fn($q) =>
+                $q->whereIn('torneo_evento_id', $eventos->pluck('id'))
+            )
+            ->get();
+
+        $filtradas = $partidas->filter(fn($p) =>
+            $p->blancas_id == $this->jugadorSeleccionado ||
+            $p->negras_id == $this->jugadorSeleccionado
+        );
+
+        return $filtradas->groupBy(fn ($p) =>
+            $p->ronda?->torneoEvento?->nombre ?? 'Sin evento'
+        );
+    }
+
+    // =========================
+    // RENDER
+    // =========================
     public function render()
     {
         return view('livewire.sistema.protejo-mi-mente.torneos-protejo');
     }
 
-    
+    // =========================
+    // RESULTADOS CATEGORÍA
+    // =========================
+    public function openResultados($categoriaId)
+    {
+        $this->categoriaSeleccionada = $categoriaId;
 
-    
+        Flux::modal('resultados-categoria')->show();
+    }
 }

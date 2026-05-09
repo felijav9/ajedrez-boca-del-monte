@@ -604,6 +604,16 @@ x-data="{
                         <path d="M5 12h14m-7-7 7 7-7 7"/>
                     </svg>
                 </button>
+
+
+                
+                <button
+                    x-on:click="$wire.openLiveResults({{ $t->id }})"
+                    style="background: #10b981; color: white; padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-left: 10px;"
+                >
+                    ⚡ Live Results
+                </button>
+
             </div>
         </div>
 
@@ -778,7 +788,7 @@ x-data="{
     {{-- MODAL TABLA DE RESULTADOS --}}
     <flux:modal name="resultados-categoria" style="max-width:800px; width:95%; border-radius:28px; overflow:hidden;">
 
-    @if($torneoSeleccionado && $categoriaSeleccionada)
+    @if($torneoSeleccionado && !is_null($categoriaSeleccionada))
 
         @php
             $categoriaNom = $torneoSeleccionado->participaciones
@@ -966,6 +976,117 @@ x-data="{
 
     </div>
 </flux:modal>
+
+<flux:modal name="live-results" style="max-width:800px; width:95%;">
+
+    <div style="background:#002c53; padding:20px; color:white;">
+        <h2 style="margin:0;">⚡ Live Results</h2>
+        <div style="font-size:13px; opacity:.8;">
+            {{ $torneoSeleccionado?->nombre }}
+        </div>
+    </div>
+
+    <div style="padding:20px; max-height:70vh; overflow-y:auto;">
+
+        @forelse($liveClasificaciones as $c)
+    <div style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #eee;">
+
+        <div>
+            <strong>{{ $c['jugador']->nombre }}</strong>
+        </div>
+
+        <div style="display:flex; gap:10px; align-items:center;">
+            
+            <div style="font-weight:800;">
+                {{ $c['pts'] }} pts
+            </div>
+
+            <button
+                wire:click="verPartidas({{ $c['jugador']->id }})"
+                style="background:#002c53; color:white; padding:5px 10px; border-radius:6px; font-size:12px;"
+            >
+                Ver partidas
+            </button>
+
+        </div>
+
+    </div>
+@empty
+            <div style="text-align:center; padding:40px; color:#64748b;">
+                Sin resultados aún
+            </div>
+        @endforelse
+
+    </div>
+
+    <div style="padding:15px; text-align:right;">
+        <flux:modal.close>
+            <button style="background:#002c53; color:white; padding:10px 20px; border-radius:10px;">
+                Cerrar
+            </button>
+        </flux:modal.close>
+    </div>
+
+</flux:modal>
+
+
+<flux:modal name="partidas-jugador" style="max-width:800px; width:95%;">
+
+    <div style="background:#002c53; padding:20px; color:white;">
+        <h2 style="margin:0;">♟️ Partidas del jugador</h2>
+    </div>
+
+    <div style="padding:20px; max-height:70vh; overflow-y:auto;">
+
+        @forelse($this->partidasAgrupadas as $evento => $partidas)
+
+            <div style="margin-bottom:20px; border:1px solid #eee; border-radius:12px; padding:12px;">
+
+                <div style="font-weight:800; margin-bottom:10px;">
+                    {{ $evento }}
+                </div>
+
+                @foreach ($partidas as $p)
+                    <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #f1f5f9;">
+
+                        <div>
+                            <div style="font-weight:700;">
+                                Ronda {{ $p->ronda?->numero }}
+                            </div>
+
+                            <div style="font-size:12px; color:#64748b;">
+                                {{ $p->blancas?->nombre }} vs {{ $p->negras?->nombre }}
+                            </div>
+                        </div>
+
+                        <div style="font-weight:900;">
+                            {{ $p->resultado }}
+                        </div>
+
+                    </div>
+                @endforeach
+
+            </div>
+
+        @empty
+            <div style="text-align:center; padding:40px; color:#64748b;">
+                No hay partidas
+            </div>
+        @endforelse
+
+    </div>
+
+    <div style="padding:15px; text-align:right;">
+        <flux:modal.close>
+            <button style="background:#002c53; color:white; padding:10px 20px; border-radius:10px;">
+                Cerrar
+            </button>
+        </flux:modal.close>
+    </div>
+
+</flux:modal>
+
+
 
     <livewire:sistema.protejo-mi-mente.footer />
 
