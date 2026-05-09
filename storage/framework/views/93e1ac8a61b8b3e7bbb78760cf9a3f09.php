@@ -16,72 +16,7 @@
 <?php $component->withAttributes(['sticky' => true,'collapsible' => true,'class' => 'border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-            <?php if (isset($component)) { $__componentOriginal837232b594bf97def5cd04bcaa1b6bb0 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal837232b594bf97def5cd04bcaa1b6bb0 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::sidebar.header','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::sidebar.header'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-
-                <?php if (isset($component)) { $__componentOriginal987d96ec78ed1cf75b349e2e5981978f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal987d96ec78ed1cf75b349e2e5981978f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.logo','data' => ['class' => 'w-auto h-16']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('logo'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['class' => 'w-auto h-16']); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal987d96ec78ed1cf75b349e2e5981978f)): ?>
-<?php $attributes = $__attributesOriginal987d96ec78ed1cf75b349e2e5981978f; ?>
-<?php unset($__attributesOriginal987d96ec78ed1cf75b349e2e5981978f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal987d96ec78ed1cf75b349e2e5981978f)): ?>
-<?php $component = $__componentOriginal987d96ec78ed1cf75b349e2e5981978f; ?>
-<?php unset($__componentOriginal987d96ec78ed1cf75b349e2e5981978f); ?>
-<?php endif; ?>
-                <?php if (isset($component)) { $__componentOriginal27b151307b59a43acdad47db3fb6fbd0 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal27b151307b59a43acdad47db3fb6fbd0 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::sidebar.collapse','data' => ['class' => 'lg:hidden']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::sidebar.collapse'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['class' => 'lg:hidden']); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal27b151307b59a43acdad47db3fb6fbd0)): ?>
-<?php $attributes = $__attributesOriginal27b151307b59a43acdad47db3fb6fbd0; ?>
-<?php unset($__attributesOriginal27b151307b59a43acdad47db3fb6fbd0); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal27b151307b59a43acdad47db3fb6fbd0)): ?>
-<?php $component = $__componentOriginal27b151307b59a43acdad47db3fb6fbd0; ?>
-<?php unset($__componentOriginal27b151307b59a43acdad47db3fb6fbd0); ?>
-<?php endif; ?>
-             <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal837232b594bf97def5cd04bcaa1b6bb0)): ?>
-<?php $attributes = $__attributesOriginal837232b594bf97def5cd04bcaa1b6bb0; ?>
-<?php unset($__attributesOriginal837232b594bf97def5cd04bcaa1b6bb0); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal837232b594bf97def5cd04bcaa1b6bb0)): ?>
-<?php $component = $__componentOriginal837232b594bf97def5cd04bcaa1b6bb0; ?>
-<?php unset($__componentOriginal837232b594bf97def5cd04bcaa1b6bb0); ?>
-<?php endif; ?>
+            
 
             <?php if (isset($component)) { $__componentOriginal061367e9976089f15083f05bd78a70e4 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal061367e9976089f15083f05bd78a70e4 = $attributes; } ?>
