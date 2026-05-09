@@ -33,7 +33,6 @@
             </flux:badge>
         @endinteract
 
-
         @interact('ronda', $row)
             <flux:badge size="sm">
                 Ronda {{ $row->ronda?->numero }}
@@ -112,10 +111,27 @@
                 {{ $partida_id ? 'Editar partida' : 'Nueva partida' }}
             </flux:heading>
 
+            {{-- TORNEO --}}
+            <flux:select
+                label="Torneo"
+                wire:model.live="torneo_id"
+            >
+                <flux:select.option value="">
+                    Seleccionar torneo
+                </flux:select.option>
+
+                @foreach ($this->torneos as $t)
+                    <flux:select.option value="{{ $t->id }}">
+                        {{ $t->nombre }}
+                    </flux:select.option>
+                @endforeach
+            </flux:select>
+
             {{-- EVENTO --}}
             <flux:select
                 label="Evento"
                 wire:model.live="torneo_evento_id"
+                :disabled="!$torneo_id"
             >
                 <flux:select.option value="">
                     Seleccionar evento
@@ -132,7 +148,7 @@
             <flux:select
                 label="Ronda"
                 wire:model="ronda_id"
-                :disabled="!$torneo_evento_id || empty($this->rondas)"
+                :disabled="!$torneo_evento_id"
             >
                 <flux:select.option value="">
                     Seleccionar ronda
@@ -145,9 +161,7 @@
                 @endforeach
             </flux:select>
 
-            {{-- =========================
-                ♟️ BLANCAS
-            ==========================--}}
+            {{-- BLANCAS --}}
             <flux:select
                 label="Jugador Blancas"
                 wire:model="blancas_id"
@@ -164,9 +178,7 @@
                 @endforeach
             </flux:select>
 
-            {{-- =========================
-                ♟️ NEGRAS
-            ==========================--}}
+            {{-- NEGRAS --}}
             <flux:select
                 label="Jugador Negras"
                 wire:model="negras_id"

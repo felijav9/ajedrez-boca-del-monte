@@ -7,49 +7,44 @@ use App\Models\ProtejoMiMente\TorneoEvento;
 use App\Models\ProtejoMiMente\TorneoEventoClasificacion;
 use Illuminate\Support\Collection;
 use Livewire\Component;
-use Livewire\Attributes\Computed;
 
 class RegistroClasificacionesEvento extends Component
 {
     public $torneo_evento_id = null;
+    public $editMode = false;
 
-    // =========================
-    // EVENTOS
-    // =========================
-    #[Computed]
+    public array $clasificacionesEdit = [];
+
+    // 🔥 CONTROL DE ORDEN
+    public bool $ordenGuardado = false;
+    public array $ordenManual = [];
+
+    /* ========================= */
     public function eventos()
     {
         return TorneoEvento::orderBy('nombre')->get();
     }
 
-    // =========================
-    // PARTIDAS
-    // =========================
+    /* ========================= */
     private function partidas(): Collection
     {
         if (!$this->torneo_evento_id) return collect();
 
         return Partida::with(['ronda', 'blancas', 'negras'])
-            ->whereHas('ronda', function ($q) {
-                $q->where('torneo_evento_id', $this->torneo_evento_id);
-            })
+            ->whereHas('ronda', fn($q) =>
+                $q->where('torneo_evento_id', $this->torneo_evento_id)
+            )
             ->get();
     }
 
-    // =========================
-    // CLASIFICACIÓN DINÁMICA
-    // =========================
-    #[Computed]
-    public function clasificaciones()
+    /* ========================= */
+    public function getClasificacionesProperty()
     {
         if (!$this->torneo_evento_id) return collect();
 
-        $partidas = $this->partidas();
-
         $tabla = [];
 
-        foreach ($partidas as $p) {
-
+        foreach ($this->partidas() as $p) {
             foreach (['blancas', 'negras'] as $color) {
 
                 $j = $p->{$color};
@@ -60,112 +55,127 @@ class RegistroClasificacionesEvento extends Component
                 if (!isset($tabla[$id])) {
                     $tabla[$id] = [
                         'jugador' => $j,
-
-                        'posicion' => 0,
-
                         'pts' => 0,
-
-                        // EDITABLES (default 0)
                         'bhc1' => 0,
                         'bh' => 0,
                         'sb' => 0,
                         'ps' => 0,
                         'de' => 0,
                         'win' => 0,
-                        'draw' => 0,
-                        'lose' => 0,
                         'bwg' => 0,
-
                         'rating' => $j->elo_clasico ?? 0,
-
-                        'pj' => 0,
                     ];
                 }
 
-                $tabla[$id]['pj']++;
+                // 🔥 puntos
+                if ($p->resultado === '1-0' && $color === 'blancas') {
+                    $tabla[$id]['pts']++;
+                    $tabla[$id]['win']++;
+                }
 
-                // RESULTADOS
-                if ($p->resultado === '1-0') {
+                if ($p->resultado === '0-1' && $color === 'negras') {
+                    $tabla[$id]['pts']++;
+                    $tabla[$id]['win']++;
+                }
 
-                    if ($color === 'blancas') {
-                        $tabla[$id]['win']++;
-                        $tabla[$id]['pts'] += 1;
-                    } else {
-                        $tabla[$id]['lose']++;
-                    }
-
-                } elseif ($p->resultado === '0-1') {
-
-                    if ($color === 'negras') {
-                        $tabla[$id]['win']++;
-                        $tabla[$id]['pts'] += 1;
-                    } else {
-                        $tabla[$id]['lose']++;
-                    }
-
-                } elseif ($p->resultado === '0.5-0.5') {
-                    $tabla[$id]['draw']++;
+                if ($p->resultado === '0.5-0.5') {
                     $tabla[$id]['pts'] += 0.5;
                 }
             }
         }
 
-        return collect($tabla)
-            ->map(function ($c) {
+        $collection = collect($tabla);
 
-                // valores base (editables)
-                $c['bh'] = $c['bh'] ?: 0;
-                $c['bhc1'] = $c['bhc1'] ?: 0;
-                $c['sb'] = $c['sb'] ?: 0;
-                $c['ps'] = $c['ps'] ?: 0;
-                $c['de'] = $c['de'] ?: 0;
-                $c['bwg'] = $c['bwg'] ?: 0;
+        // =========================
+        // 🔥 ORDEN FINAL
+        // =========================
 
-                return $c;
-            })
-            ->sortByDesc('pts')
-            ->values()
-            ->map(function ($c, $i) {
-                $c['posicion'] = $i + 1;
-                return $c;
+        if ($this->ordenGuardado && !empty($this->ordenManual)) {
+
+            // 🟢 ORDEN FIJO (DESPUÉS DE GUARDAR)
+            $collection = $collection->sortBy(function ($item, $id) {
+                return $this->ordenManual[$id] ?? 999999;
             });
+
+        } else {
+
+            // 🔵 ORDEN AUTOMÁTICO
+            $collection = $collection->sort(function ($a, $b) {
+                return [
+                    $b['pts'] <=> $a['pts'],
+                    $b['win'] <=> $a['win'],
+                    $b['bhc1'] <=> $a['bhc1'],
+                    $b['bh'] <=> $a['bh'],
+                    $b['sb'] <=> $a['sb'],
+                    $b['ps'] <=> $a['ps'],
+                    $b['de'] <=> $a['de'],
+                    $b['bwg'] <=> $a['bwg'],
+                    $b['rating'] <=> $a['rating'],
+                ];
+            });
+        }
+
+        return $collection->values()->map(function ($c, $i) {
+            $c['posicion'] = $i + 1;
+            return $c;
+        });
     }
 
-    // =========================
-    // PUBLICAR (UPSERT)
-    // =========================
+    /* ========================= */
+    public function guardarOrden()
+    {
+        $this->ordenManual = [];
+
+        foreach ($this->clasificaciones as $i => $c) {
+            $id = $c['jugador']->id;
+            $this->ordenManual[$id] = $i;
+        }
+
+        $this->ordenGuardado = true;
+
+        $this->dispatch('toast', message: 'Orden guardado correctamente');
+    }
+
+    /* ========================= */
+    public function updatedTorneoEventoId()
+    {
+        $this->clasificacionesEdit = [];
+        $this->ordenManual = [];
+        $this->ordenGuardado = false;
+    }
+
+    /* ========================= */
     public function publicar()
     {
-        if (!$this->torneo_evento_id) return;
-
         foreach ($this->clasificaciones as $c) {
+
+            $id = $c['jugador']->id;
 
             TorneoEventoClasificacion::updateOrCreate(
                 [
                     'torneo_evento_id' => $this->torneo_evento_id,
-                    'jugador_id' => $c['jugador']->id,
+                    'jugador_id' => $id,
                 ],
                 [
                     'posicion' => $c['posicion'],
                     'pts' => $c['pts'],
-
-                    'bhc1' => $c['bhc1'],
-                    'bh' => $c['bh'],
-                    'sb' => $c['sb'],
-                    'ps' => $c['ps'],
-                    'de' => $c['de'],
-
-                    'win' => $c['win'],
-                    'draw' => $c['draw'],
-                    'lose' => $c['lose'],
-
-                    'bwg' => $c['bwg'],
                     'rating' => $c['rating'],
+
+                    'bhc1' => $this->clasificacionesEdit[$id]['bhc1'] ?? 0,
+                    'bh'   => $this->clasificacionesEdit[$id]['bh'] ?? 0,
+                    'sb'   => $this->clasificacionesEdit[$id]['sb'] ?? 0,
+                    'ps'   => $this->clasificacionesEdit[$id]['ps'] ?? 0,
+                    'de'   => $this->clasificacionesEdit[$id]['de'] ?? 0,
+                    'win'  => $this->clasificacionesEdit[$id]['win'] ?? 0,
+                    'bwg'  => $this->clasificacionesEdit[$id]['bwg'] ?? 0,
                 ]
             );
         }
 
-        $this->dispatch('toast', message: 'Clasificación publicada correctamente');
+        $this->editMode = false;
+        $this->ordenGuardado = false;
+
+        $this->dispatch('toast', message: 'Publicado correctamente');
     }
 
     public function render()

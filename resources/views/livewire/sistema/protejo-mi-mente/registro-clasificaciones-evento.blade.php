@@ -1,94 +1,117 @@
-<section class="w-full">
+<section class="w-full bg-white rounded-xl shadow p-4">
 
-    <div class="flex items-center justify-between mb-6">
+    {{-- HEADER --}}
+    <div class="flex justify-between items-center mb-4">
 
-        <flux:heading size="xl">
+        <h1 class="text-2xl font-bold">
             Clasificación del Evento
-        </flux:heading>
+        </h1>
 
-        {{-- BOTÓN PUBLICAR --}}
-        <flux:button
-            variant="primary"
-            wire:click="publicar"
-        >
-            Publicar
-        </flux:button>
+        <div class="flex gap-2">
 
+            <flux:button
+                variant="ghost"
+                wire:click="$toggle('editMode')"
+            >
+                {{ $editMode ? 'Bloquear' : 'Editar' }}
+            </flux:button>
+
+            <flux:button
+                variant="primary"
+                wire:click="guardarOrden"
+            >
+                Guardar orden
+            </flux:button>
+
+            @if($ordenGuardado)
+                <flux:button
+                    variant="danger"
+                    wire:click="publicar"
+                >
+                    Publicar
+                </flux:button>
+            @endif
+
+        </div>
     </div>
 
-    {{-- FILTRO --}}
-    <div class="mb-6">
-
+    {{-- EVENTO --}}
+    <div class="mb-4">
         <flux:select wire:model.live="torneo_evento_id" label="Evento">
+            <flux:select.option value="">Seleccionar</flux:select.option>
 
-            <flux:select.option value="">
-                Seleccionar evento
-            </flux:select.option>
-
-            @foreach ($this->eventos as $evento)
+            @foreach ($this->eventos() as $evento)
                 <flux:select.option value="{{ $evento->id }}">
                     {{ $evento->nombre }}
                 </flux:select.option>
             @endforeach
-
         </flux:select>
-
     </div>
 
     {{-- TABLA --}}
     <div class="overflow-x-auto">
 
-        <table class="w-full text-sm border">
+        <table class="w-full text-sm border rounded-lg overflow-hidden">
 
-            <thead class="bg-gray-100">
+            <thead class="bg-gray-100 text-xs uppercase">
                 <tr>
-                    <th>#</th>
-                    <th>Apellidos, Nombre</th>
-                    <th>Rating</th>
-                    <th>Pts</th>
-                    <th>BHC1</th>
-                    <th>BH</th>
-                    <th>SB</th>
-                    <th>PS</th>
-                    <th>DE</th>
-                    <th>WIN</th>
-                    <th>BWG</th>
+                    <th class="p-2">#</th>
+                    <th class="p-2 text-left">Jugador</th>
+                    <th class="p-2">Rating</th>
+                    <th class="p-2">Pts</th>
+
+                    <th class="p-2">BHC1</th>
+                    <th class="p-2">BH</th>
+                    <th class="p-2">SB</th>
+                    <th class="p-2">PS</th>
+                    <th class="p-2">DE</th>
+                    <th class="p-2">WIN</th>
+                    <th class="p-2">BWG</th>
                 </tr>
             </thead>
 
             <tbody>
 
-                @forelse ($this->clasificaciones as $c)
+                @foreach ($this->clasificaciones as $c)
 
-                    <tr class="border-b">
+                    @php $id = $c['jugador']->id; @endphp
 
-                        <td>{{ $c['posicion'] }}</td>
+                    <tr class="border-b hover:bg-gray-50">
 
-                        <td>{{ $c['jugador']->apellido }}, {{ $c['jugador']->nombre }}</td>
-
-                        <td>{{ $c['rating'] }}</td>
-                        <td class="font-bold">{{ $c['pts'] }}</td>
-
-                        <td>{{ $c['bhc1'] }}</td>
-                        <td>{{ $c['bh'] }}</td>
-                        <td>{{ $c['sb'] }}</td>
-                        <td>{{ $c['ps'] }}</td>
-                        <td>{{ $c['de'] }}</td>
-
-                        <td class="text-green-600">{{ $c['win'] }}</td>
-                        <td>{{ $c['bwg'] }}</td>
-
-                    </tr>
-
-                @empty
-
-                    <tr>
-                        <td colspan="11" class="text-center p-6 text-gray-500">
-                            Selecciona un evento
+                        <td class="p-2 font-bold text-center">
+                            {{ $c['posicion'] }}
                         </td>
+
+                        <td class="p-2">
+                            {{ $c['jugador']->apellido }}, {{ $c['jugador']->nombre }}
+                        </td>
+
+                        <td class="p-2 text-center">{{ $c['rating'] }}</td>
+
+                        <td class="p-2 font-bold text-center">{{ $c['pts'] }}</td>
+
+                        @foreach (['bhc1','bh','sb','ps','de','win','bwg'] as $field)
+
+                            <td class="p-1 text-center">
+
+                                @if($editMode)
+                                    <input
+                                        type="number"
+                                        step="0.1"
+                                        class="w-16 border rounded text-center"
+                                        wire:model.defer="clasificacionesEdit.{{ $id }}.{{ $field }}"
+                                    />
+                                @else
+                                    {{ $this->clasificacionesEdit[$id][$field] ?? 0 }}
+                                @endif
+
+                            </td>
+
+                        @endforeach
+
                     </tr>
 
-                @endforelse
+                @endforeach
 
             </tbody>
 

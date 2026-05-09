@@ -4,6 +4,7 @@ namespace App\Livewire\Sistema\ProtejoMiMente;
 
 use App\Models\ProtejoMiMente\Partida;
 use App\Models\ProtejoMiMente\Ronda;
+use App\Models\ProtejoMiMente\Torneo;
 use App\Models\ProtejoMiMente\TorneoEvento;
 use App\Models\ProtejoMiMente\Jugador;
 use App\Traits\DataTable;
@@ -20,7 +21,7 @@ class RegistroPartidas extends Component
         ['index' => 'id', 'label' => '#'],
         ['index' => 'evento', 'label' => 'Evento'],
         ['index' => 'ronda', 'label' => 'Ronda'],
-        ['index' => 'mesa', 'label' => 'Mesa'], // 👈 AQUÍ
+        ['index' => 'mesa', 'label' => 'Mesa'],
         ['index' => 'blancas', 'label' => 'Blancas'],
         ['index' => 'negras', 'label' => 'Negras'],
         ['index' => 'resultado', 'label' => 'Resultado'],
@@ -30,15 +31,65 @@ class RegistroPartidas extends Component
 
     public $partida_id = null;
 
+    // 🔥 FILTROS NUEVOS
+    public $torneo_id = null;
     public $torneo_evento_id = null;
-    public $ronda_id = null;
 
+    public $ronda_id = null;
     public $blancas_id = null;
     public $negras_id = null;
 
     public $mesa = null;
     public $resultado = null;
     public $finalizada = false;
+
+    /* =========================
+        TORNEOS
+    ==========================*/
+    #[Computed]
+    public function torneos()
+    {
+        return Torneo::orderBy('nombre')->get();
+    }
+
+    /* =========================
+        EVENTOS (DEPENDE DEL TORNEO)
+    ==========================*/
+    #[Computed]
+    public function eventos()
+    {
+        if (!$this->torneo_id) return collect();
+
+        return TorneoEvento::where('torneo_id', $this->torneo_id)
+            ->orderBy('nombre')
+            ->get();
+    }
+
+    /* =========================
+        RONDAS (DEPENDE EVENTO)
+    ==========================*/
+    #[Computed]
+    public function rondas()
+    {
+        if (!$this->torneo_evento_id) return collect();
+
+        return Ronda::where('torneo_evento_id', $this->torneo_evento_id)
+            ->orderBy('numero')
+            ->get();
+    }
+
+    /* =========================
+        JUGADORES (DEPENDE TORNEO)
+    ==========================*/
+    #[Computed]
+    public function jugadores()
+    {
+        if (!$this->torneo_id) return collect();
+
+        return Jugador::whereHas('torneos', function ($q) {
+            $q->where('torneos.id', $this->torneo_id);
+        })->orderBy('nombre')->get();
+    }
 
     /* =========================
         LISTADO
@@ -56,60 +107,19 @@ class RegistroPartidas extends Component
     }
 
     /* =========================
-        EVENTOS
+        REACTIVIDAD EN CADENA
     ==========================*/
-    #[Computed]
-    public function eventos()
+    public function updatedTorneoId()
     {
-        return TorneoEvento::orderBy('nombre')->get();
-    }
-
-    /* =========================
-        RONDAS
-    ==========================*/
-    #[Computed]
-    public function rondas()
-    {
-        if (!$this->torneo_evento_id) {
-            return collect();
-        }
-
-        return Ronda::where('torneo_evento_id', $this->torneo_evento_id)
-            ->orderBy('numero')
-            ->get();
-    }
-
-    /* =========================
-        JUGADORES POR TORNEO
-    ==========================*/
-    #[Computed]
-    public function jugadores()
-    {
-        if (!$this->torneo_evento_id) {
-            return collect();
-        }
-
-        $evento = TorneoEvento::find($this->torneo_evento_id);
-
-        if (!$evento) {
-            return collect();
-        }
-
-        return Jugador::whereHas('torneos', function ($q) use ($evento) {
-            $q->where('torneos.id', $evento->torneo_id);
-        })
-        ->orderBy('nombre')
-        ->get();
-    }
-
-    /* =========================
-        REACTIVIDAD
-    ==========================*/
-    public function updatedTorneoEventoId()
-    {
+        $this->torneo_evento_id = null;
         $this->ronda_id = null;
         $this->blancas_id = null;
         $this->negras_id = null;
+    }
+
+    public function updatedTorneoEventoId()
+    {
+        $this->ronda_id = null;
     }
 
     /* =========================
@@ -119,6 +129,7 @@ class RegistroPartidas extends Component
     {
         $this->reset([
             'partida_id',
+            'torneo_id',
             'torneo_evento_id',
             'ronda_id',
             'blancas_id',
@@ -132,7 +143,7 @@ class RegistroPartidas extends Component
     }
 
     /* =========================
-        SAVE (VALIDACIÓN FUERTE)
+        SAVE
     ==========================*/
     public function save()
     {
@@ -144,24 +155,7 @@ class RegistroPartidas extends Component
         ]);
 
         if ($this->blancas_id === $this->negras_id) {
-            $this->addError('negras_id', 'Un jugador no puede jugar contra sí mismo');
-            return;
-        }
-
-        $exists = Partida::where('ronda_id', $this->ronda_id)
-            ->where(function ($q) {
-                $q->where(function ($x) {
-                    $x->where('blancas_id', $this->blancas_id)
-                      ->where('negras_id', $this->negras_id);
-                })->orWhere(function ($x) {
-                    $x->where('blancas_id', $this->negras_id)
-                      ->where('negras_id', $this->blancas_id);
-                });
-            })
-            ->exists();
-
-        if ($exists) {
-            $this->addError('blancas_id', 'Esta partida ya existe en esta ronda');
+            $this->addError('negras_id', 'No puede jugar contra sí mismo');
             return;
         }
 
@@ -186,8 +180,8 @@ class RegistroPartidas extends Component
         $p = Partida::findOrFail($id);
 
         $this->partida_id = $p->id;
-        $this->ronda_id = $p->ronda_id;
         $this->torneo_evento_id = $p->ronda->torneo_evento_id;
+        $this->ronda_id = $p->ronda_id;
 
         $this->blancas_id = $p->blancas_id;
         $this->negras_id = $p->negras_id;
@@ -200,40 +194,11 @@ class RegistroPartidas extends Component
     }
 
     /* =========================
-        UPDATE (MISMAS VALIDACIONES)
+        UPDATE
     ==========================*/
     public function update()
     {
         $p = Partida::findOrFail($this->partida_id);
-
-        $this->validate([
-            'ronda_id' => 'required|exists:sistema.rondas,id',
-            'blancas_id' => 'required|exists:sistema.jugadores,id',
-            'negras_id' => 'required|exists:sistema.jugadores,id',
-        ]);
-
-        if ($this->blancas_id === $this->negras_id) {
-            $this->addError('negras_id', 'Un jugador no puede jugar contra sí mismo');
-            return;
-        }
-
-        $exists = Partida::where('ronda_id', $this->ronda_id)
-            ->where('id', '!=', $this->partida_id)
-            ->where(function ($q) {
-                $q->where(function ($x) {
-                    $x->where('blancas_id', $this->blancas_id)
-                      ->where('negras_id', $this->negras_id);
-                })->orWhere(function ($x) {
-                    $x->where('blancas_id', $this->negras_id)
-                      ->where('negras_id', $this->blancas_id);
-                });
-            })
-            ->exists();
-
-        if ($exists) {
-            $this->addError('blancas_id', 'Ya existe esta partida en esta ronda');
-            return;
-        }
 
         $p->update([
             'ronda_id' => $this->ronda_id,
@@ -244,7 +209,7 @@ class RegistroPartidas extends Component
             'finalizada' => $this->finalizada,
         ]);
 
-        $this->toastSuccess('Partida actualizada');
+        $this->toastSuccess('Actualizado');
         Flux::modals()->close();
     }
 
@@ -254,7 +219,7 @@ class RegistroPartidas extends Component
     public function destroy($id)
     {
         Partida::findOrFail($id)->delete();
-        $this->toastWarning('Eliminada');
+        $this->toastWarning('Eliminado');
     }
 
     public function render()
