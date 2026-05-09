@@ -7,66 +7,50 @@
             Clasificación del Evento
         </h1>
 
-        <div class="flex gap-2">
+        <flux:button
+            variant="primary"
+            wire:click="publicar"
+        >
+            Publicar clasificación
+        </flux:button>
 
-            <flux:button
-                variant="ghost"
-                wire:click="$toggle('editMode')"
-            >
-                {{ $editMode ? 'Bloquear' : 'Editar' }}
-            </flux:button>
-
-            <flux:button
-                variant="primary"
-                wire:click="guardarOrden"
-            >
-                Guardar orden
-            </flux:button>
-
-            @if($ordenGuardado)
-                <flux:button
-                    variant="danger"
-                    wire:click="publicar"
-                >
-                    Publicar
-                </flux:button>
-            @endif
-
-        </div>
     </div>
 
-    {{-- EVENTO --}}
-    <div class="mb-4">
-        <flux:select wire:model.live="torneo_evento_id" label="Evento">
-            <flux:select.option value="">Seleccionar</flux:select.option>
+    {{-- FILTROS --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
 
-            @foreach ($this->eventos() as $evento)
-                <flux:select.option value="{{ $evento->id }}">
-                    {{ $evento->nombre }}
+        <flux:select wire:model.live="torneo_id" label="Torneo">
+            <flux:select.option value="">Seleccionar torneo</flux:select.option>
+
+            @foreach ($this->torneos() as $t)
+                <flux:select.option value="{{ $t->id }}">
+                    {{ $t->nombre }}
                 </flux:select.option>
             @endforeach
         </flux:select>
+
+        <flux:select wire:model.live="torneo_evento_id" label="Evento" :disabled="!$torneo_id">
+            <flux:select.option value="">Seleccionar evento</flux:select.option>
+
+            @foreach ($this->eventos() as $e)
+                <flux:select.option value="{{ $e->id }}">
+                    {{ $e->nombre }}
+                </flux:select.option>
+            @endforeach
+        </flux:select>
+
     </div>
 
     {{-- TABLA --}}
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto border rounded-lg">
 
-        <table class="w-full text-sm border rounded-lg overflow-hidden">
+        <table class="w-full text-sm">
 
             <thead class="bg-gray-100 text-xs uppercase">
                 <tr>
-                    <th class="p-2">#</th>
-                    <th class="p-2 text-left">Jugador</th>
-                    <th class="p-2">Rating</th>
-                    <th class="p-2">Pts</th>
-
-                    <th class="p-2">BHC1</th>
-                    <th class="p-2">BH</th>
-                    <th class="p-2">SB</th>
-                    <th class="p-2">PS</th>
-                    <th class="p-2">DE</th>
-                    <th class="p-2">WIN</th>
-                    <th class="p-2">BWG</th>
+                    <th class="p-3 text-left">Jugador</th>
+                    <th class="p-3 text-center">Pts</th>
+                    <th class="p-3 text-center">Acción</th>
                 </tr>
             </thead>
 
@@ -74,40 +58,27 @@
 
                 @foreach ($this->clasificaciones as $c)
 
-                    @php $id = $c['jugador']->id; @endphp
-
                     <tr class="border-b hover:bg-gray-50">
 
-                        <td class="p-2 font-bold text-center">
-                            {{ $c['posicion'] }}
-                        </td>
-
-                        <td class="p-2">
+                        <td class="p-3 font-medium">
                             {{ $c['jugador']->apellido }}, {{ $c['jugador']->nombre }}
                         </td>
 
-                        <td class="p-2 text-center">{{ $c['rating'] }}</td>
+                        <td class="p-3 text-center font-bold text-lg">
+                            {{ $c['pts'] }}
+                        </td>
 
-                        <td class="p-2 font-bold text-center">{{ $c['pts'] }}</td>
+                        <td class="p-3 text-center">
 
-                        @foreach (['bhc1','bh','sb','ps','de','win','bwg'] as $field)
+                            <flux:button
+                                size="sm"
+                                variant="ghost"
+                                wire:click="verPartidas({{ $c['jugador']->id }})"
+                            >
+                                Ver partidas
+                            </flux:button>
 
-                            <td class="p-1 text-center">
-
-                                @if($editMode)
-                                    <input
-                                        type="number"
-                                        step="0.1"
-                                        class="w-16 border rounded text-center"
-                                        wire:model.defer="clasificacionesEdit.{{ $id }}.{{ $field }}"
-                                    />
-                                @else
-                                    {{ $this->clasificacionesEdit[$id][$field] ?? 0 }}
-                                @endif
-
-                            </td>
-
-                        @endforeach
+                        </td>
 
                     </tr>
 
@@ -118,5 +89,52 @@
         </table>
 
     </div>
+
+    {{-- =========================
+        MODAL PARTIDAS
+    ==========================--}}
+    <flux:modal wire:model="verPartidasModal" class="min-w-[40rem]">
+
+        <div class="space-y-4">
+
+            <flux:heading size="lg">
+                Partidas del jugador
+            </flux:heading>
+
+            <div class="space-y-2">
+
+                @foreach ($this->partidasJugador as $p)
+
+                    <div class="p-3 border rounded-lg flex justify-between">
+
+                        <div>
+                            <div class="font-semibold">
+                                Ronda {{ $p->ronda?->numero }}
+                            </div>
+
+                            <div class="text-xs text-gray-500">
+                                {{ $p->blancas?->nombre }} vs {{ $p->negras?->nombre }}
+                            </div>
+                        </div>
+
+                        <div class="font-bold">
+                            {{ $p->resultado ?? 'Pendiente' }}
+                        </div>
+
+                    </div>
+
+                @endforeach
+
+            </div>
+
+            <div class="flex justify-end">
+                <flux:button wire:click="$set('verPartidasModal', false)">
+                    Cerrar
+                </flux:button>
+            </div>
+
+        </div>
+
+    </flux:modal>
 
 </section>

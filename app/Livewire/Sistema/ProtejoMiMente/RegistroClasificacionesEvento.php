@@ -3,6 +3,7 @@
 namespace App\Livewire\Sistema\ProtejoMiMente;
 
 use App\Models\ProtejoMiMente\Partida;
+use App\Models\ProtejoMiMente\Torneo;
 use App\Models\ProtejoMiMente\TorneoEvento;
 use App\Models\ProtejoMiMente\TorneoEventoClasificacion;
 use Illuminate\Support\Collection;
@@ -10,22 +11,35 @@ use Livewire\Component;
 
 class RegistroClasificacionesEvento extends Component
 {
+    public $torneo_id = null;
     public $torneo_evento_id = null;
-    public $editMode = false;
 
-    public array $clasificacionesEdit = [];
-
-    // 🔥 CONTROL DE ORDEN
     public bool $ordenGuardado = false;
-    public array $ordenManual = [];
 
-    /* ========================= */
-    public function eventos()
+    // MODAL
+    public bool $verPartidasModal = false;
+    public $jugadorSeleccionado = null;
+
+    /* =========================
+        TORNEOS
+    ==========================*/
+    public function torneos()
     {
-        return TorneoEvento::orderBy('nombre')->get();
+        return Torneo::orderBy('nombre')->get();
     }
 
-    /* ========================= */
+    public function eventos()
+    {
+        if (!$this->torneo_id) return collect();
+
+        return TorneoEvento::where('torneo_id', $this->torneo_id)
+            ->orderBy('nombre')
+            ->get();
+    }
+
+    /* =========================
+        PARTIDAS DEL EVENTO
+    ==========================*/
     private function partidas(): Collection
     {
         if (!$this->torneo_evento_id) return collect();
@@ -37,11 +51,12 @@ class RegistroClasificacionesEvento extends Component
             ->get();
     }
 
-    /* ========================= */
+    /* =========================
+        CLASIFICACIÓN + EMPATES + PODIO
+        (CORRECTO PARA MEDALLAS)
+    ==========================*/
     public function getClasificacionesProperty()
     {
-        if (!$this->torneo_evento_id) return collect();
-
         $tabla = [];
 
         foreach ($this->partidas() as $p) {
@@ -56,26 +71,16 @@ class RegistroClasificacionesEvento extends Component
                     $tabla[$id] = [
                         'jugador' => $j,
                         'pts' => 0,
-                        'bhc1' => 0,
-                        'bh' => 0,
-                        'sb' => 0,
-                        'ps' => 0,
-                        'de' => 0,
-                        'win' => 0,
-                        'bwg' => 0,
-                        'rating' => $j->elo_clasico ?? 0,
                     ];
                 }
 
-                // 🔥 puntos
+                // puntos
                 if ($p->resultado === '1-0' && $color === 'blancas') {
                     $tabla[$id]['pts']++;
-                    $tabla[$id]['win']++;
                 }
 
                 if ($p->resultado === '0-1' && $color === 'negras') {
                     $tabla[$id]['pts']++;
-                    $tabla[$id]['win']++;
                 }
 
                 if ($p->resultado === '0.5-0.5') {
@@ -84,100 +89,96 @@ class RegistroClasificacionesEvento extends Component
             }
         }
 
-        $collection = collect($tabla);
+        // ordenar por puntos
+        $collection = collect($tabla)
+            ->sortByDesc('pts')
+            ->values();
 
         // =========================
-        // 🔥 ORDEN FINAL
+        // RANKING CON EMPATES + PODIO REAL
         // =========================
+        $result = [];
+        $lastPts = null;
+        $rank = 0;
+        $position = 0;
 
-        if ($this->ordenGuardado && !empty($this->ordenManual)) {
+        foreach ($collection as $i => $c) {
 
-            // 🟢 ORDEN FIJO (DESPUÉS DE GUARDAR)
-            $collection = $collection->sortBy(function ($item, $id) {
-                return $this->ordenManual[$id] ?? 999999;
-            });
+            if ($lastPts !== $c['pts']) {
+                $position++;
+                $rank = $position;
+                $lastPts = $c['pts'];
+            }
 
-        } else {
-
-            // 🔵 ORDEN AUTOMÁTICO
-            $collection = $collection->sort(function ($a, $b) {
-                return [
-                    $b['pts'] <=> $a['pts'],
-                    $b['win'] <=> $a['win'],
-                    $b['bhc1'] <=> $a['bhc1'],
-                    $b['bh'] <=> $a['bh'],
-                    $b['sb'] <=> $a['sb'],
-                    $b['ps'] <=> $a['ps'],
-                    $b['de'] <=> $a['de'],
-                    $b['bwg'] <=> $a['bwg'],
-                    $b['rating'] <=> $a['rating'],
-                ];
-            });
+            $result[] = [
+                'rank' => $rank,
+                'jugador' => $c['jugador'],
+                'pts' => $c['pts'],
+            ];
         }
 
-        return $collection->values()->map(function ($c, $i) {
-            $c['posicion'] = $i + 1;
-            return $c;
-        });
+        return collect($result);
     }
 
-    /* ========================= */
-    public function guardarOrden()
-    {
-        $this->ordenManual = [];
-
-        foreach ($this->clasificaciones as $i => $c) {
-            $id = $c['jugador']->id;
-            $this->ordenManual[$id] = $i;
-        }
-
-        $this->ordenGuardado = true;
-
-        $this->dispatch('toast', message: 'Orden guardado correctamente');
-    }
-
-    /* ========================= */
-    public function updatedTorneoEventoId()
-    {
-        $this->clasificacionesEdit = [];
-        $this->ordenManual = [];
-        $this->ordenGuardado = false;
-    }
-
-    /* ========================= */
+    /* =========================
+        PUBLICAR
+    ==========================*/
     public function publicar()
     {
         foreach ($this->clasificaciones as $c) {
 
-            $id = $c['jugador']->id;
-
             TorneoEventoClasificacion::updateOrCreate(
                 [
                     'torneo_evento_id' => $this->torneo_evento_id,
-                    'jugador_id' => $id,
+                    'jugador_id' => $c['jugador']->id,
                 ],
                 [
-                    'posicion' => $c['posicion'],
+                    'posicion' => $c['rank'],
                     'pts' => $c['pts'],
-                    'rating' => $c['rating'],
-
-                    'bhc1' => $this->clasificacionesEdit[$id]['bhc1'] ?? 0,
-                    'bh'   => $this->clasificacionesEdit[$id]['bh'] ?? 0,
-                    'sb'   => $this->clasificacionesEdit[$id]['sb'] ?? 0,
-                    'ps'   => $this->clasificacionesEdit[$id]['ps'] ?? 0,
-                    'de'   => $this->clasificacionesEdit[$id]['de'] ?? 0,
-                    'win'  => $this->clasificacionesEdit[$id]['win'] ?? 0,
-                    'bwg'  => $this->clasificacionesEdit[$id]['bwg'] ?? 0,
                 ]
             );
         }
 
-        $this->editMode = false;
-        $this->ordenGuardado = false;
+        $this->ordenGuardado = true;
 
-        $this->dispatch('toast', message: 'Publicado correctamente');
+        $this->dispatch('toast', message: 'Clasificación publicada correctamente');
     }
 
+    /* =========================
+        MODAL PARTIDAS
+    ==========================*/
+    public function verPartidas($jugadorId)
+    {
+        $this->jugadorSeleccionado = $jugadorId;
+        $this->verPartidasModal = true;
+    }
+
+    public function getPartidasJugadorProperty()
+    {
+        if (!$this->jugadorSeleccionado) return collect();
+
+        return $this->partidas()
+            ->filter(function ($p) {
+                return $p->blancas_id == $this->jugadorSeleccionado
+                    || $p->negras_id == $this->jugadorSeleccionado;
+            })
+            ->sortBy(fn($p) => $p->ronda?->numero) // 👈 AQUÍ EL FIX
+            ->values();
+    }
+
+    /* ========================= */
+    public function updatedTorneoId()
+    {
+        $this->torneo_evento_id = null;
+        $this->ordenGuardado = false;
+    }
+
+    public function updatedTorneoEventoId()
+    {
+        $this->ordenGuardado = false;
+    }
+
+    /* ========================= */
     public function render()
     {
         return view('livewire.sistema.protejo-mi-mente.registro-clasificaciones-evento');
