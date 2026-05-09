@@ -3,29 +3,34 @@
 namespace App\Models\ProtejoMiMente;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Ronda extends Model
 {
-    use HasFactory;
-
-    protected $connection = 'sistema';
-
-    protected $table = 'rondas';
+    protected $table = 'sistema.rondas';
 
     protected $fillable = [
         'torneo_evento_id',
         'numero',
-        'finalizada'
+        'finalizada',
     ];
+
+    /*
+    |------------------------------------------------------------------
+    | RELACIONES
+    |------------------------------------------------------------------
+    */
 
     public function torneoEvento()
     {
-        return $this->belongsTo(TorneoEvento::class);
+        return $this->belongsTo(
+            TorneoEvento::class,
+            'torneo_evento_id'
+        );
     }
 
-    public function partidas()
+    // opcional: acceso indirecto al torneo
+    public function torneo()
     {
-        return $this->hasMany(Partida::class);
+        return $this->torneoEvento?->torneo();
     }
 }
