@@ -1,3 +1,4 @@
 <div>
-    {{-- You must be the change you wish to see in the world. - Mahatma Gandhi --}}
+
+    <h2>REGISTRO RONDAS</h2>
 </div>

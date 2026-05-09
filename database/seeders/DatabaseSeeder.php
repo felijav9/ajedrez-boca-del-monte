@@ -2001,7 +2001,5 @@ class DatabaseSeeder extends Seeder
         
     }
 
-
-
     
 }
