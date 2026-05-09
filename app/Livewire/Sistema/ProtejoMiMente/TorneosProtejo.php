@@ -210,20 +210,29 @@ public function partidasAgrupadas()
 
 
 
-    #[Computed]
+#[Computed]
 public function emparejamientos()
 {
     if (! $this->torneoSeleccionado) {
         return collect();
     }
 
-    return Partida::with(['ronda.torneoEvento', 'blancas', 'negras'])
+    return Partida::with([
+            'ronda.torneoEvento',
+            'blancas',
+            'negras'
+        ])
         ->whereHas('ronda.torneoEvento', function ($q) {
             $q->where('torneo_id', $this->torneoSeleccionado->id);
         })
         ->get()
-        ->groupBy(fn($p) => $p->ronda?->numero ?? 'Sin ronda');
+        ->groupBy(fn($p) => $p->ronda?->torneoEvento?->nombre ?? 'Sin evento')
+        ->map(function ($eventos) {
+            return $eventos->groupBy(fn($p) => $p->ronda?->numero ?? 0)
+                           ->sortKeys();
+        });
 }
+
 public function openEmparejamientos($torneoId)
 {
     $this->torneoSeleccionado = Torneo::findOrFail($torneoId);

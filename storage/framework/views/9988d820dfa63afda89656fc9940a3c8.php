@@ -733,96 +733,143 @@ Cerrar Detalle <?php echo $__env->renderComponent(); ?>
          }">
 
         
-        <div style="
-            background: white; 
-            border-radius: 24px; 
-            border: 1px solid #f1f5f9; 
-            overflow: hidden; 
-            box-shadow: 0 10px 25px -5px rgba(0, 44, 83, 0.08);
-            transition: transform 0.3s ease;
-            margin-bottom: 35px;
-        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+         
+<div style="
+    background: white; 
+    border-radius: 24px; 
+    border: 1px solid #f1f5f9; 
+    overflow: hidden; 
+    box-shadow: 0 10px 25px -5px rgba(0, 44, 83, 0.08);
+    transition: transform 0.3s ease;
+    margin-bottom: 35px;
+"
+onmouseover="this.style.transform='translateY(-2px)'"
+onmouseout="this.style.transform='translateY(0)'">
+
+    
+    <div style="
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        padding: 20px 24px;
+        background: linear-gradient(to right, #ffffff, #f8fafc);
+        flex-wrap: wrap;
+        gap: 15px;
+    ">
+
+        
+        <div style="display: flex; align-items: center; gap: 14px; min-width: 220px;">
 
             <div style="
+                background: #002c53; 
+                width: 45px; 
+                height: 45px; 
+                border-radius: 14px; 
                 display: flex; 
-                justify-content: space-between; 
                 align-items: center; 
-                padding: 20px 24px;
-                background: linear-gradient(to right, #ffffff, #f8fafc);
+                justify-content: center;
+                box-shadow: 0 4px 10px rgba(0, 44, 83, 0.15);
+                flex-shrink: 0;
             ">
-
-                <div style="display: flex; align-items: center; gap: 14px;">
-                    <div style="
-                        background: #002c53; 
-                        width: 45px; 
-                        height: 45px; 
-                        border-radius: 14px; 
-                        display: flex; 
-                        align-items: center; 
-                        justify-content: center;
-                        box-shadow: 0 4px 10px rgba(0, 44, 83, 0.15);
-                    ">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="15" cy="7" r="3"/>
-                            <path d="M11 21v-3a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v3"/>
-                            <circle cx="7" cy="7" r="3"/>
-                            <path d="M3 21v-2a4 4 0 0 1 4-4h2"/>
-                        </svg>
-                    </div>
-
-                    <div>
-                        <h4 style="margin: 0; color: #002c53; font-weight: 800; font-size: 17px; letter-spacing: -0.025em; line-height: 1.2;">
-                            Jugadores Confirmados
-                        </h4>
-                    </div>
-                </div>
-
-                <button 
-                    x-on:click="$flux.modal('jugadores-confirmados').show()"
-                    style="
-                        background: #002c53; 
-                        color: #facc15; 
-                        padding: 10px 18px; 
-                        border-radius: 12px; 
-                        font-size: 13px; 
-                        font-weight: 700; 
-                        border: none;
-                        cursor: pointer;
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
-                        transition: all 0.2s ease;
-                        box-shadow: 0 4px 12px rgba(0, 44, 83, 0.2);
-                    "
-                    onmouseover="this.style.background='#003d73'; this.style.boxShadow='0 6px 15px rgba(0, 44, 83, 0.3)'"
-                    onmouseout="this.style.background='#002c53'; this.style.boxShadow='0 4px 12px rgba(0, 44, 83, 0.2)'"
-                >
-                    <span>Ver lista</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M5 12h14m-7-7 7 7-7 7"/>
-                    </svg>
-                </button>
-
-
-                
-                <button
-                    x-on:click="$wire.openLiveResults(<?php echo e($t->id); ?>)"
-                    style="background: #10b981; color: white; padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-left: 10px;"
-                >
-                    ⚡ Live Results
-                </button>
-
-
-                    <button
-        x-on:click="$wire.openEmparejamientos(<?php echo e($t->id); ?>)"
-        style="background: #f59e0b; color: white; padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-left: 10px;"
-    >
-        ♟️ Emparejamientos
-    </button>
-
-
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="15" cy="7" r="3"/>
+                    <path d="M11 21v-3a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v3"/>
+                    <circle cx="7" cy="7" r="3"/>
+                    <path d="M3 21v-2a4 4 0 0 1 4-4h2"/>
+                </svg>
             </div>
+
+            <div>
+                <h4 style="
+                    margin: 0; 
+                    color: #002c53; 
+                    font-weight: 800; 
+                    font-size: 17px;
+                    line-height: 1.2;
+                ">
+                    Jugadores Confirmados
+                </h4>
+            </div>
+
         </div>
+
+        
+        <div style="
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        ">
+
+            
+            <button 
+                x-on:click="$flux.modal('jugadores-confirmados').show()"
+                style="
+                    background: #002c53; 
+                    color: #facc15; 
+                    padding: 10px 16px; 
+                    border-radius: 12px; 
+                    font-size: 13px; 
+                    font-weight: 700; 
+                    border: none;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    transition: all 0.2s ease;
+                    white-space: nowrap;
+                "
+            >
+                Ver lista
+            </button>
+
+            
+            <button
+                x-on:click="$wire.openLiveResults(<?php echo e($t->id); ?>)"
+                style="
+                    background: #10b981; 
+                    color: white; 
+                    padding: 10px 16px; 
+                    border-radius: 12px; 
+                    font-size: 13px; 
+                    font-weight: 700; 
+                    border: none; 
+                    cursor: pointer; 
+                    display: flex; 
+                    align-items: center; 
+                    gap: 8px;
+                    white-space: nowrap;
+                "
+            >
+                ⚡ Live
+            </button>
+
+            
+            <button
+                x-on:click="$wire.openEmparejamientos(<?php echo e($t->id); ?>)"
+                style="
+                    background: #f59e0b; 
+                    color: white; 
+                    padding: 10px 16px; 
+                    border-radius: 12px; 
+                    font-size: 13px; 
+                    font-weight: 700; 
+                    border: none; 
+                    cursor: pointer; 
+                    display: flex; 
+                    align-items: center; 
+                    gap: 8px;
+                    white-space: nowrap;
+                "
+            >
+                ♟️ Emparejamientos
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
 
         
         <div style="margin-bottom: 35px;">
@@ -1365,7 +1412,12 @@ Cerrar Detalle <?php echo $__env->renderComponent(); ?>
     <div style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #eee;">
 
         <div>
-            <strong><?php echo e($c['jugador']->nombre); ?></strong>
+
+            <strong>
+                <?php echo e($c['jugador']->nombre); ?> <?php echo e($c['jugador']->apellido); ?>
+
+            </strong>
+
         </div>
 
         <div style="display:flex; gap:10px; align-items:center;">
@@ -1467,7 +1519,7 @@ Cerrar Detalle <?php echo $__env->renderComponent(); ?>
         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $data['partidas']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
             <div>
                 Ronda <?php echo e($p->ronda?->numero); ?> -
-                <?php echo e($p->blancas?->nombre); ?> vs <?php echo e($p->negras?->nombre); ?>
+                <?php echo e($p->blancas?->nombre); ?> <?php echo e($p->blancas?->apellido); ?> vs <?php echo e($p->negras?->nombre); ?> <?php echo e($p->negras?->apellido); ?>
 
                 (<?php echo e($p->resultado); ?>)
             </div>
@@ -1522,19 +1574,21 @@ Cerrar Detalle <?php echo $__env->renderComponent(); ?>
 <?php unset($__componentOriginal8cc9d3143946b992b324617832699c5f); ?>
 <?php endif; ?>
 
+
 <?php if (isset($component)) { $__componentOriginal8cc9d3143946b992b324617832699c5f = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal8cc9d3143946b992b324617832699c5f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::modal.index','data' => ['name' => 'emparejamientos','style' => 'max-width:800px; width:95%;']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::modal.index','data' => ['name' => 'emparejamientos','style' => 'max-width:900px; width:95%;']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::modal'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['name' => 'emparejamientos','style' => 'max-width:800px; width:95%;']); ?>
+<?php $component->withAttributes(['name' => 'emparejamientos','style' => 'max-width:900px; width:95%;']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 
+    
     <div style="background:#f59e0b; padding:20px; color:white;">
         <h2 style="margin:0;">♟️ Emparejamientos</h2>
         <div style="font-size:13px; opacity:.9;">
@@ -1543,28 +1597,142 @@ Cerrar Detalle <?php echo $__env->renderComponent(); ?>
         </div>
     </div>
 
+    
     <div style="padding:20px; max-height:70vh; overflow-y:auto;">
 
-<?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $this->emparejamientos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ronda => $partidas): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
-            <div style="margin-bottom:20px; background:#fff; border:1px solid #eee; border-radius:12px; padding:15px;">
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $this->emparejamientos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $evento => $rondas): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
 
-                <div style="font-weight:900; margin-bottom:10px; color:#002c53;">
-                    Ronda <?php echo e($ronda); ?>
+            
+            <div style="margin-bottom:25px; border:1px solid #eee; border-radius:12px; padding:15px; background:#fff;">
+
+                <div style="font-weight:900; font-size:16px; color:#002c53; margin-bottom:15px;">
+                    🏆 <?php echo e($evento); ?>
 
                 </div>
 
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $partidas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
-                    <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f3f4f6;">
-                        <div>
-                            <?php echo e($p->blancas->nombre); ?> vs <?php echo e($p->negras->nombre); ?>
+                
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $rondas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ronda => $partidas): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+
+                    <div style="margin-bottom:15px; background:#f9fafb; padding:12px; border-radius:10px;">
+
+                        <div style="font-weight:800; margin-bottom:10px; color:#111827;">
+                            Ronda <?php echo e($ronda); ?>
 
                         </div>
 
-                        <div style="font-weight:800; color:#64748b;">
-                            <?php echo e($p->resultado ?? 'Pendiente'); ?>
+                        
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $partidas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
+                            <div style="
+                                display:flex;
+                                flex-wrap:wrap;
+                                gap:10px;
+                                align-items:center;
+                                justify-content:space-between;
+                                padding:10px 0;
+                                border-bottom:1px solid #e5e7eb;
+                                font-size:13px;
+                            ">
 
-                        </div>
+                                
+                                <div style="
+                                    display:flex;
+                                    align-items:center;
+                                    gap:6px;
+                                    flex:1;
+                                    min-width:140px;
+                                ">
+                                    <span style="
+                                        width:12px;
+                                        height:12px;
+                                        background:#fff;
+                                        border:2px solid #111;
+                                        border-radius:50%;
+                                        box-shadow:0 1px 2px rgba(0,0,0,.2);
+                                    "></span>
+
+                                    <span style="
+                                        font-size:10px;
+                                        font-weight:900;
+                                        color:#111;
+                                        background:#f3f4f6;
+                                        padding:2px 5px;
+                                        border-radius:6px;
+                                    ">
+                                        BL
+                                    </span>
+
+                                    <span style="word-break:break-word;">
+                                        <?php echo e($p->blancas?->nombre); ?> <?php echo e($p->blancas?->apellido); ?>
+
+                                    </span>
+                                </div>
+
+                                
+                                <div style="opacity:.5; font-weight:700;">
+                                    vs
+                                </div>
+
+                                
+                                <div style="
+                                    display:flex;
+                                    align-items:center;
+                                    gap:6px;
+                                    flex:1;
+                                    min-width:140px;
+                                ">
+                                    <span style="
+                                        width:12px;
+                                        height:12px;
+                                        background:#111;
+                                        border-radius:50%;
+                                        box-shadow:0 1px 2px rgba(0,0,0,.3);
+                                    "></span>
+
+                                    <span style="
+                                        font-size:10px;
+                                        font-weight:900;
+                                        color:#fff;
+                                        background:#111;
+                                        padding:2px 5px;
+                                        border-radius:6px;
+                                    ">
+                                        NE
+                                    </span>
+
+                                    <span style="word-break:break-word;">
+                                        <?php echo e($p->negras?->nombre); ?> <?php echo e($p->negras?->apellido); ?>
+
+                                    </span>
+                                </div>
+
+                                
+                                <div style="
+                                    color:#64748b;
+                                    min-width:80px;
+                                    text-align:center;
+                                    flex:1;
+                                ">
+                                    Mesa <?php echo e($p->mesa ?? '-'); ?>
+
+                                </div>
+
+                                
+                                <div style="
+                                    font-weight:800;
+                                    color:#374151;
+                                    min-width:90px;
+                                    text-align:right;
+                                    flex:1;
+                                ">
+                                    <?php echo e($p->resultado ?? 'Pendiente'); ?>
+
+                                </div>
+
+                            </div>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+
                     </div>
+
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
 
             </div>
@@ -1577,6 +1745,7 @@ Cerrar Detalle <?php echo $__env->renderComponent(); ?>
 
     </div>
 
+    
     <div style="padding:15px; text-align:right;">
         <?php if (isset($component)) { $__componentOriginalda55eef372798476d918d03158796935 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalda55eef372798476d918d03158796935 = $attributes; } ?>
@@ -1615,6 +1784,7 @@ Cerrar Detalle <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginal8cc9d3143946b992b324617832699c5f; ?>
 <?php unset($__componentOriginal8cc9d3143946b992b324617832699c5f); ?>
 <?php endif; ?>
+
 
     <?php
 $__split = function ($name, $params = []) {

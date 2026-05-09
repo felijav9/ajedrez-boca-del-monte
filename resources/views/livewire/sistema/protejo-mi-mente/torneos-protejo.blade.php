@@ -534,97 +534,144 @@ x-data="{
             }
          }">
 
-        {{-- JUGADORES CONFIRMADOS --}}
-        <div style="
-            background: white; 
-            border-radius: 24px; 
-            border: 1px solid #f1f5f9; 
-            overflow: hidden; 
-            box-shadow: 0 10px 25px -5px rgba(0, 44, 83, 0.08);
-            transition: transform 0.3s ease;
-            margin-bottom: 35px;
-        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+        
+         {{-- JUGADORES CONFIRMADOS --}}
+<div style="
+    background: white; 
+    border-radius: 24px; 
+    border: 1px solid #f1f5f9; 
+    overflow: hidden; 
+    box-shadow: 0 10px 25px -5px rgba(0, 44, 83, 0.08);
+    transition: transform 0.3s ease;
+    margin-bottom: 35px;
+"
+onmouseover="this.style.transform='translateY(-2px)'"
+onmouseout="this.style.transform='translateY(0)'">
+
+    {{-- HEADER --}}
+    <div style="
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        padding: 20px 24px;
+        background: linear-gradient(to right, #ffffff, #f8fafc);
+        flex-wrap: wrap;
+        gap: 15px;
+    ">
+
+        {{-- TITULO --}}
+        <div style="display: flex; align-items: center; gap: 14px; min-width: 220px;">
 
             <div style="
+                background: #002c53; 
+                width: 45px; 
+                height: 45px; 
+                border-radius: 14px; 
                 display: flex; 
-                justify-content: space-between; 
                 align-items: center; 
-                padding: 20px 24px;
-                background: linear-gradient(to right, #ffffff, #f8fafc);
+                justify-content: center;
+                box-shadow: 0 4px 10px rgba(0, 44, 83, 0.15);
+                flex-shrink: 0;
             ">
-
-                <div style="display: flex; align-items: center; gap: 14px;">
-                    <div style="
-                        background: #002c53; 
-                        width: 45px; 
-                        height: 45px; 
-                        border-radius: 14px; 
-                        display: flex; 
-                        align-items: center; 
-                        justify-content: center;
-                        box-shadow: 0 4px 10px rgba(0, 44, 83, 0.15);
-                    ">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="15" cy="7" r="3"/>
-                            <path d="M11 21v-3a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v3"/>
-                            <circle cx="7" cy="7" r="3"/>
-                            <path d="M3 21v-2a4 4 0 0 1 4-4h2"/>
-                        </svg>
-                    </div>
-
-                    <div>
-                        <h4 style="margin: 0; color: #002c53; font-weight: 800; font-size: 17px; letter-spacing: -0.025em; line-height: 1.2;">
-                            Jugadores Confirmados
-                        </h4>
-                    </div>
-                </div>
-
-                <button 
-                    x-on:click="$flux.modal('jugadores-confirmados').show()"
-                    style="
-                        background: #002c53; 
-                        color: #facc15; 
-                        padding: 10px 18px; 
-                        border-radius: 12px; 
-                        font-size: 13px; 
-                        font-weight: 700; 
-                        border: none;
-                        cursor: pointer;
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
-                        transition: all 0.2s ease;
-                        box-shadow: 0 4px 12px rgba(0, 44, 83, 0.2);
-                    "
-                    onmouseover="this.style.background='#003d73'; this.style.boxShadow='0 6px 15px rgba(0, 44, 83, 0.3)'"
-                    onmouseout="this.style.background='#002c53'; this.style.boxShadow='0 4px 12px rgba(0, 44, 83, 0.2)'"
-                >
-                    <span>Ver lista</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M5 12h14m-7-7 7 7-7 7"/>
-                    </svg>
-                </button>
-
-
-                
-                <button
-                    x-on:click="$wire.openLiveResults({{ $t->id }})"
-                    style="background: #10b981; color: white; padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-left: 10px;"
-                >
-                    ⚡ Live Results
-                </button>
-
-
-                    <button
-        x-on:click="$wire.openEmparejamientos({{ $t->id }})"
-        style="background: #f59e0b; color: white; padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-left: 10px;"
-    >
-        ♟️ Emparejamientos
-    </button>
-
-
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="15" cy="7" r="3"/>
+                    <path d="M11 21v-3a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v3"/>
+                    <circle cx="7" cy="7" r="3"/>
+                    <path d="M3 21v-2a4 4 0 0 1 4-4h2"/>
+                </svg>
             </div>
+
+            <div>
+                <h4 style="
+                    margin: 0; 
+                    color: #002c53; 
+                    font-weight: 800; 
+                    font-size: 17px;
+                    line-height: 1.2;
+                ">
+                    Jugadores Confirmados
+                </h4>
+            </div>
+
         </div>
+
+        {{-- BOTONES --}}
+        <div style="
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        ">
+
+            {{-- LISTA --}}
+            <button 
+                x-on:click="$flux.modal('jugadores-confirmados').show()"
+                style="
+                    background: #002c53; 
+                    color: #facc15; 
+                    padding: 10px 16px; 
+                    border-radius: 12px; 
+                    font-size: 13px; 
+                    font-weight: 700; 
+                    border: none;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    transition: all 0.2s ease;
+                    white-space: nowrap;
+                "
+            >
+                Ver lista
+            </button>
+
+            {{-- LIVE --}}
+            <button
+                x-on:click="$wire.openLiveResults({{ $t->id }})"
+                style="
+                    background: #10b981; 
+                    color: white; 
+                    padding: 10px 16px; 
+                    border-radius: 12px; 
+                    font-size: 13px; 
+                    font-weight: 700; 
+                    border: none; 
+                    cursor: pointer; 
+                    display: flex; 
+                    align-items: center; 
+                    gap: 8px;
+                    white-space: nowrap;
+                "
+            >
+                ⚡ Live
+            </button>
+
+            {{-- EMPAREJAMIENTOS --}}
+            <button
+                x-on:click="$wire.openEmparejamientos({{ $t->id }})"
+                style="
+                    background: #f59e0b; 
+                    color: white; 
+                    padding: 10px 16px; 
+                    border-radius: 12px; 
+                    font-size: 13px; 
+                    font-weight: 700; 
+                    border: none; 
+                    cursor: pointer; 
+                    display: flex; 
+                    align-items: center; 
+                    gap: 8px;
+                    white-space: nowrap;
+                "
+            >
+                ♟️ Emparejamientos
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
 
         {{-- DETALLES DEL TORNEO --}}
         <div style="margin-bottom: 35px;">
@@ -1001,7 +1048,11 @@ x-data="{
     <div style="display:flex; justify-content:space-between; padding:12px; border-bottom:1px solid #eee;">
 
         <div>
-            <strong>{{ $c['jugador']->nombre }}</strong>
+
+            <strong>
+                {{ $c['jugador']->nombre }} {{ $c['jugador']->apellido }}
+            </strong>
+
         </div>
 
         <div style="display:flex; gap:10px; align-items:center;">
@@ -1062,7 +1113,7 @@ x-data="{
         @foreach ($data['partidas'] as $p)
             <div>
                 Ronda {{ $p->ronda?->numero }} -
-                {{ $p->blancas?->nombre }} vs {{ $p->negras?->nombre }}
+                {{ $p->blancas?->nombre }} {{ $p->blancas?->apellido }} vs {{ $p->negras?->nombre }} {{ $p->negras?->apellido }}
                 ({{ $p->resultado }})
             </div>
         @endforeach
@@ -1087,8 +1138,10 @@ x-data="{
 
 </flux:modal>
 
-<flux:modal name="emparejamientos" style="max-width:800px; width:95%;">
 
+<flux:modal name="emparejamientos" style="max-width:900px; width:95%;">
+
+    {{-- HEADER --}}
     <div style="background:#f59e0b; padding:20px; color:white;">
         <h2 style="margin:0;">♟️ Emparejamientos</h2>
         <div style="font-size:13px; opacity:.9;">
@@ -1096,25 +1149,136 @@ x-data="{
         </div>
     </div>
 
+    {{-- BODY --}}
     <div style="padding:20px; max-height:70vh; overflow-y:auto;">
 
-@forelse($this->emparejamientos as $ronda => $partidas)
-            <div style="margin-bottom:20px; background:#fff; border:1px solid #eee; border-radius:12px; padding:15px;">
+        @forelse($this->emparejamientos as $evento => $rondas)
 
-                <div style="font-weight:900; margin-bottom:10px; color:#002c53;">
-                    Ronda {{ $ronda }}
+            {{-- EVENTO --}}
+            <div style="margin-bottom:25px; border:1px solid #eee; border-radius:12px; padding:15px; background:#fff;">
+
+                <div style="font-weight:900; font-size:16px; color:#002c53; margin-bottom:15px;">
+                    🏆 {{ $evento }}
                 </div>
 
-                @foreach($partidas as $p)
-                    <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f3f4f6;">
-                        <div>
-                            {{ $p->blancas->nombre }} vs {{ $p->negras->nombre }}
+                {{-- RONDAS --}}
+                @foreach($rondas as $ronda => $partidas)
+
+                    <div style="margin-bottom:15px; background:#f9fafb; padding:12px; border-radius:10px;">
+
+                        <div style="font-weight:800; margin-bottom:10px; color:#111827;">
+                            Ronda {{ $ronda }}
                         </div>
 
-                        <div style="font-weight:800; color:#64748b;">
-                            {{ $p->resultado ?? 'Pendiente' }}
-                        </div>
+                        {{-- PARTIDAS --}}
+                        @foreach($partidas as $p)
+                            <div style="
+                                display:flex;
+                                flex-wrap:wrap;
+                                gap:10px;
+                                align-items:center;
+                                justify-content:space-between;
+                                padding:10px 0;
+                                border-bottom:1px solid #e5e7eb;
+                                font-size:13px;
+                            ">
+
+                                {{-- BLANCAS --}}
+                                <div style="
+                                    display:flex;
+                                    align-items:center;
+                                    gap:6px;
+                                    flex:1;
+                                    min-width:140px;
+                                ">
+                                    <span style="
+                                        width:12px;
+                                        height:12px;
+                                        background:#fff;
+                                        border:2px solid #111;
+                                        border-radius:50%;
+                                        box-shadow:0 1px 2px rgba(0,0,0,.2);
+                                    "></span>
+
+                                    <span style="
+                                        font-size:10px;
+                                        font-weight:900;
+                                        color:#111;
+                                        background:#f3f4f6;
+                                        padding:2px 5px;
+                                        border-radius:6px;
+                                    ">
+                                        BL
+                                    </span>
+
+                                    <span style="word-break:break-word;">
+                                        {{ $p->blancas?->nombre }} {{ $p->blancas?->apellido }}
+                                    </span>
+                                </div>
+
+                                {{-- VS --}}
+                                <div style="opacity:.5; font-weight:700;">
+                                    vs
+                                </div>
+
+                                {{-- NEGRAS --}}
+                                <div style="
+                                    display:flex;
+                                    align-items:center;
+                                    gap:6px;
+                                    flex:1;
+                                    min-width:140px;
+                                ">
+                                    <span style="
+                                        width:12px;
+                                        height:12px;
+                                        background:#111;
+                                        border-radius:50%;
+                                        box-shadow:0 1px 2px rgba(0,0,0,.3);
+                                    "></span>
+
+                                    <span style="
+                                        font-size:10px;
+                                        font-weight:900;
+                                        color:#fff;
+                                        background:#111;
+                                        padding:2px 5px;
+                                        border-radius:6px;
+                                    ">
+                                        NE
+                                    </span>
+
+                                    <span style="word-break:break-word;">
+                                        {{ $p->negras?->nombre }} {{ $p->negras?->apellido }}
+                                    </span>
+                                </div>
+
+                                {{-- MESA --}}
+                                <div style="
+                                    color:#64748b;
+                                    min-width:80px;
+                                    text-align:center;
+                                    flex:1;
+                                ">
+                                    Mesa {{ $p->mesa ?? '-' }}
+                                </div>
+
+                                {{-- RESULTADO --}}
+                                <div style="
+                                    font-weight:800;
+                                    color:#374151;
+                                    min-width:90px;
+                                    text-align:right;
+                                    flex:1;
+                                ">
+                                    {{ $p->resultado ?? 'Pendiente' }}
+                                </div>
+
+                            </div>
+                        @endforeach
+
                     </div>
+
                 @endforeach
 
             </div>
@@ -1127,6 +1291,7 @@ x-data="{
 
     </div>
 
+    {{-- FOOTER --}}
     <div style="padding:15px; text-align:right;">
         <flux:modal.close>
             <button style="background:#002c53; color:white; padding:10px 20px; border-radius:10px;">
@@ -1136,6 +1301,7 @@ x-data="{
     </div>
 
 </flux:modal>
+
 
     <livewire:sistema.protejo-mi-mente.footer />
 
