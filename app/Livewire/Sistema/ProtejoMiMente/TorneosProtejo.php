@@ -2,10 +2,9 @@
 
 namespace App\Livewire\Sistema\ProtejoMiMente;
 
+use App\Models\ProtejoMiMente\Partida;
 use App\Models\ProtejoMiMente\Torneo;
 use App\Models\ProtejoMiMente\TorneoEvento;
-use App\Models\ProtejoMiMente\Partida;
-
 use Flux\Flux;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -16,8 +15,11 @@ class TorneosProtejo extends Component
     use WithPagination;
 
     public $categoriaSeleccionada = null;
+
     public $search = '';
+
     public $year = '2026';
+
     public $torneoSeleccionado = null;
 
     // 🔥 LIVE RESULTS
@@ -25,6 +27,8 @@ class TorneosProtejo extends Component
 
     // 🆕 MODAL PARTIDAS
     public $jugadorSeleccionado = null;
+
+    
 
     public function updatingSearch()
     {
@@ -84,55 +88,41 @@ class TorneosProtejo extends Component
     // =========================
     // LIVE RESULTS (ARREGLADO)
     // =========================
+
     public function openLiveResults($torneoId)
     {
         $this->torneoSeleccionado = Torneo::findOrFail($torneoId);
 
-        // 🔥 TODOS los eventos (NO solo el último)
-        $eventos = TorneoEvento::where('torneo_id', $torneoId)->get();
+        // 🔥 traer TODOS los eventos del torneo
+        $eventos = TorneoEvento::where('torneo_id', $torneoId)->pluck('id');
 
         if ($eventos->isEmpty()) {
             $this->liveClasificaciones = collect();
             Flux::modal('live-results')->show();
+
             return;
         }
 
-        $partidas = Partida::with(['ronda.torneoEvento', 'blancas', 'negras'])
-            ->whereHas('ronda', fn ($q) =>
-                $q->whereIn('torneo_evento_id', $eventos->pluck('id'))
-            )
+        // 🔥 USAR TABLA REAL DE CLASIFICACIÓN
+        $clasificaciones = \App\Models\ProtejoMiMente\TorneoEventoClasificacion::with('jugador')
+            ->whereIn('torneo_evento_id', $eventos)
             ->get();
 
+        // 🔥 AGRUPAR POR JUGADOR SUMANDO TODOS LOS EVENTOS
         $tabla = [];
 
-        foreach ($partidas as $p) {
+        foreach ($clasificaciones as $c) {
 
-            foreach (['blancas', 'negras'] as $color) {
+            $id = $c->jugador_id;
 
-                $j = $p->{$color};
-                if (! $j) continue;
-
-                $id = $j->id;
-
-                if (! isset($tabla[$id])) {
-                    $tabla[$id] = [
-                        'jugador' => $j,
-                        'pts' => 0,
-                    ];
-                }
-
-                if ($p->resultado === '1-0' && $color === 'blancas') {
-                    $tabla[$id]['pts'] += 1;
-                }
-
-                if ($p->resultado === '0-1' && $color === 'negras') {
-                    $tabla[$id]['pts'] += 1;
-                }
-
-                if ($p->resultado === '0.5-0.5') {
-                    $tabla[$id]['pts'] += 0.5;
-                }
+            if (! isset($tabla[$id])) {
+                $tabla[$id] = [
+                    'jugador' => $c->jugador,
+                    'pts' => 0,
+                ];
             }
+
+            $tabla[$id]['pts'] += (float) $c->pts;
         }
 
         $this->liveClasificaciones = collect($tabla)
@@ -155,35 +145,48 @@ class TorneosProtejo extends Component
     // =========================
     // PARTIDAS AGRUPADAS (FIX REAL)
     // =========================
+   
     #[Computed]
-    public function partidasAgrupadas()
-    {
-        if (! $this->jugadorSeleccionado || ! $this->torneoSeleccionado) {
-            return collect();
-        }
+public function partidasAgrupadas()
+{
+    if (! $this->jugadorSeleccionado || ! $this->torneoSeleccionado) {
+        return collect();
+    }
 
-        // 🔥 TODOS los eventos del torneo
-        $eventos = TorneoEvento::where('torneo_id', $this->torneoSeleccionado->id)->get();
+    $eventos = TorneoEvento::where('torneo_id', $this->torneoSeleccionado->id)->get();
 
-        if ($eventos->isEmpty()) {
-            return collect();
-        }
+    if ($eventos->isEmpty()) {
+        return collect();
+    }
 
-        $partidas = Partida::with(['ronda.torneoEvento', 'blancas', 'negras'])
-            ->whereHas('ronda', fn($q) =>
-                $q->whereIn('torneo_evento_id', $eventos->pluck('id'))
-            )
-            ->get();
-
-        $filtradas = $partidas->filter(fn($p) =>
+    $partidas = Partida::with(['ronda.torneoEvento', 'blancas', 'negras'])
+        ->whereHas('ronda', fn($q) =>
+            $q->whereIn('torneo_evento_id', $eventos->pluck('id'))
+        )
+        ->get()
+        ->filter(fn($p) =>
             $p->blancas_id == $this->jugadorSeleccionado ||
             $p->negras_id == $this->jugadorSeleccionado
         );
 
-        return $filtradas->groupBy(fn ($p) =>
-            $p->ronda?->torneoEvento?->nombre ?? 'Sin evento'
-        );
-    }
+    $clasificaciones = \App\Models\ProtejoMiMente\TorneoEventoClasificacion::where('jugador_id', $this->jugadorSeleccionado)
+        ->whereIn('torneo_evento_id', $eventos->pluck('id'))
+        ->get()
+        ->keyBy('torneo_evento_id');
+
+    return $partidas->groupBy(function ($p) {
+        return $p->ronda?->torneoEvento?->nombre ?? 'Sin evento';
+    })->map(function ($partidasEvento) use ($clasificaciones) {
+
+        $eventoId = $partidasEvento->first()?->ronda?->torneo_evento_id;
+
+        return [
+            'pts' => $clasificaciones[$eventoId]->pts ?? 0,
+            'partidas' => $partidasEvento,
+        ];
+    });
+}
+
 
     // =========================
     // RENDER
@@ -202,4 +205,30 @@ class TorneosProtejo extends Component
 
         Flux::modal('resultados-categoria')->show();
     }
+
+
+
+
+
+    #[Computed]
+public function emparejamientos()
+{
+    if (! $this->torneoSeleccionado) {
+        return collect();
+    }
+
+    return Partida::with(['ronda.torneoEvento', 'blancas', 'negras'])
+        ->whereHas('ronda.torneoEvento', function ($q) {
+            $q->where('torneo_id', $this->torneoSeleccionado->id);
+        })
+        ->get()
+        ->groupBy(fn($p) => $p->ronda?->numero ?? 'Sin ronda');
+}
+public function openEmparejamientos($torneoId)
+{
+    $this->torneoSeleccionado = Torneo::findOrFail($torneoId);
+
+    Flux::modal('emparejamientos')->show();
+}
+
 }

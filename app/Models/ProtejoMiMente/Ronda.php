@@ -33,4 +33,12 @@ class Ronda extends Model
     {
         return $this->torneoEvento?->torneo();
     }
+
+
+
+    public function partidas()
+{
+    return $this->hasMany(Partida::class);
+}
+
 }

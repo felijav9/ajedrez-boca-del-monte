@@ -21,6 +21,8 @@ class TorneoEvento extends Model
         'finalizado'
     ];
 
+
+    
     public function torneo()
     {
         return $this->belongsTo(Torneo::class);
@@ -44,6 +46,19 @@ class TorneoEvento extends Model
     public function resultados()
     {
         return $this->hasMany(ResultadoIndividual::class);
+}
+
+
+public function partidas()
+{
+    return $this->hasManyThrough(
+        Partida::class,
+        Ronda::class,
+        'torneo_evento_id', // FK en rondas
+        'ronda_id',         // FK en partidas
+        'id',
+        'id'
+    );
 }
     
 }

@@ -614,6 +614,15 @@ x-data="{
                     ⚡ Live Results
                 </button>
 
+
+                    <button
+        x-on:click="$wire.openEmparejamientos({{ $t->id }})"
+        style="background: #f59e0b; color: white; padding: 10px 18px; border-radius: 12px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-left: 10px;"
+    >
+        ♟️ Emparejamientos
+    </button>
+
+
             </div>
         </div>
 
@@ -1038,37 +1047,29 @@ x-data="{
 
     <div style="padding:20px; max-height:70vh; overflow-y:auto;">
 
-        @forelse($this->partidasAgrupadas as $evento => $partidas)
+        @forelse($this->partidasAgrupadas as $evento => $data)
 
-            <div style="margin-bottom:20px; border:1px solid #eee; border-radius:12px; padding:12px;">
+    <div style="margin-bottom:20px; border:1px solid #eee; border-radius:12px; padding:12px;">
 
-                <div style="font-weight:800; margin-bottom:10px;">
-                    {{ $evento }}
-                </div>
+        <div style="font-weight:800;">
+            {{ $evento }}
+        </div>
 
-                @foreach ($partidas as $p)
-                    <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #f1f5f9;">
+        <div style="font-size:12px; margin-bottom:10px; color:#002c53;">
+            🏆 {{ $data['pts'] }} pts en este evento
+        </div>
 
-                        <div>
-                            <div style="font-weight:700;">
-                                Ronda {{ $p->ronda?->numero }}
-                            </div>
-
-                            <div style="font-size:12px; color:#64748b;">
-                                {{ $p->blancas?->nombre }} vs {{ $p->negras?->nombre }}
-                            </div>
-                        </div>
-
-                        <div style="font-weight:900;">
-                            {{ $p->resultado }}
-                        </div>
-
-                    </div>
-                @endforeach
-
+        @foreach ($data['partidas'] as $p)
+            <div>
+                Ronda {{ $p->ronda?->numero }} -
+                {{ $p->blancas?->nombre }} vs {{ $p->negras?->nombre }}
+                ({{ $p->resultado }})
             </div>
+        @endforeach
 
-        @empty
+    </div>
+
+@empty
             <div style="text-align:center; padding:40px; color:#64748b;">
                 No hay partidas
             </div>
@@ -1086,7 +1087,55 @@ x-data="{
 
 </flux:modal>
 
+<flux:modal name="emparejamientos" style="max-width:800px; width:95%;">
 
+    <div style="background:#f59e0b; padding:20px; color:white;">
+        <h2 style="margin:0;">♟️ Emparejamientos</h2>
+        <div style="font-size:13px; opacity:.9;">
+            {{ $torneoSeleccionado?->nombre }}
+        </div>
+    </div>
+
+    <div style="padding:20px; max-height:70vh; overflow-y:auto;">
+
+@forelse($this->emparejamientos as $ronda => $partidas)
+            <div style="margin-bottom:20px; background:#fff; border:1px solid #eee; border-radius:12px; padding:15px;">
+
+                <div style="font-weight:900; margin-bottom:10px; color:#002c53;">
+                    Ronda {{ $ronda }}
+                </div>
+
+                @foreach($partidas as $p)
+                    <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f3f4f6;">
+                        <div>
+                            {{ $p->blancas->nombre }} vs {{ $p->negras->nombre }}
+                        </div>
+
+                        <div style="font-weight:800; color:#64748b;">
+                            {{ $p->resultado ?? 'Pendiente' }}
+                        </div>
+                    </div>
+                @endforeach
+
+            </div>
+
+        @empty
+            <div style="text-align:center; padding:40px; color:#64748b;">
+                No hay emparejamientos aún
+            </div>
+        @endforelse
+
+    </div>
+
+    <div style="padding:15px; text-align:right;">
+        <flux:modal.close>
+            <button style="background:#002c53; color:white; padding:10px 20px; border-radius:10px;">
+                Cerrar
+            </button>
+        </flux:modal.close>
+    </div>
+
+</flux:modal>
 
     <livewire:sistema.protejo-mi-mente.footer />
 
