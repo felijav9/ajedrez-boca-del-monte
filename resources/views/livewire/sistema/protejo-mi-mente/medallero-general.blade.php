@@ -240,7 +240,7 @@
 
         <div style="padding: 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; text-align: right;">
             <flux:modal.close>
-                <flux:button variant="filled" style="background: #002c53; color: white;">Entendido</flux:button>
+                <flux:button variant="filled" style="background: #002c53; color: white;">Cerrar</flux:button>
             </flux:modal.close>
         </div>
     </flux:modal>

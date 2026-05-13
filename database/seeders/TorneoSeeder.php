@@ -151,7 +151,7 @@ En cuarto lugar quedó el equipo Gambitos conformado por Juan Diego Pacheco, Ale
             'estado' => 'finalizado',
         ]);
 
-        Torneo::create([
+       /* Torneo::create([
         'nombre' => 'Talleres y primer torneo técnico 2026',
         'descripcion' => 'Primer torneo técnico con jornada completa de 9:00 am a 5:30 pm. 
 
@@ -169,6 +169,8 @@ En cuarto lugar quedó el equipo Gambitos conformado por Juan Diego Pacheco, Ale
             'fecha_fin' => '2026-05-09',
             'lugar' => 'Cubil Protejo Mi Comunidad',
             'tipo' => 'interno',
-        ]);
+                        'estado' => 'finalizado',
+
+        ]); */
     }
 }

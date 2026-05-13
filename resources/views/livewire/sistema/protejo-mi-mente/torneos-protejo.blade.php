@@ -536,7 +536,7 @@ x-data="{
 
         
          {{-- JUGADORES CONFIRMADOS --}}
-<div style="
+ {{-- <div style="
     background: white; 
     border-radius: 24px; 
     border: 1px solid #f1f5f9; 
@@ -546,10 +546,10 @@ x-data="{
     margin-bottom: 35px;
 "
 onmouseover="this.style.transform='translateY(-2px)'"
-onmouseout="this.style.transform='translateY(0)'">
+onmouseout="this.style.transform='translateY(0)'">--}}
 
     {{-- HEADER --}}
-    <div style="
+    {{-- <div style="
         display: flex; 
         justify-content: space-between; 
         align-items: center; 
@@ -559,7 +559,6 @@ onmouseout="this.style.transform='translateY(0)'">
         gap: 15px;
     ">
 
-        {{-- TITULO --}}
         <div style="display: flex; align-items: center; gap: 14px; min-width: 220px;">
 
             <div style="
@@ -595,7 +594,6 @@ onmouseout="this.style.transform='translateY(0)'">
 
         </div>
 
-        {{-- BOTONES --}}
         <div style="
             display: flex; 
             gap: 10px; 
@@ -603,7 +601,6 @@ onmouseout="this.style.transform='translateY(0)'">
             justify-content: flex-end;
         ">
 
-            {{-- LISTA --}}
             <button 
                 x-on:click="$flux.modal('jugadores-confirmados').show()"
                 style="
@@ -625,7 +622,6 @@ onmouseout="this.style.transform='translateY(0)'">
                 Ver lista
             </button>
 
-            {{-- LIVE --}}
             <button
                 x-on:click="$wire.openLiveResults({{ $t->id }})"
                 style="
@@ -646,7 +642,6 @@ onmouseout="this.style.transform='translateY(0)'">
                 ⚡ Live
             </button>
 
-            {{-- EMPAREJAMIENTOS --}}
             <button
                 x-on:click="$wire.openEmparejamientos({{ $t->id }})"
                 style="
@@ -670,7 +665,7 @@ onmouseout="this.style.transform='translateY(0)'">
         </div>
 
     </div>
-</div>
+</div>-}}
 
 
         {{-- DETALLES DEL TORNEO --}}

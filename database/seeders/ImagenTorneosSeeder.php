@@ -812,11 +812,11 @@ class ImagenTorneosSeeder extends Seeder
 
             
             // TORNEO  técnico mayo855
-            [
+         /*   [
                 'torneo_id' => 10,
                 'ruta' => 'img/torneo_portada.jpg',
                 'tipo' => 'portada'
-            ],
+            ], */
 
 
 

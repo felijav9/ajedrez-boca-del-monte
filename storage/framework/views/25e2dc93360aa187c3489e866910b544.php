@@ -137,10 +137,7 @@
             
             <div class="footer-right">
                 <div class="contact-group">
-                    <a href="tel:32246555" class="contact-link">
-                        <span class="icon">📞</span>
-                        <span class="text">32246555</span>
-                    </a>
+                 
                     <a href="mailto:axel5javier536@gmail.com" class="contact-link">
                         <span class="icon">✉</span>
                         <span class="text">axel5javier536@gmail.com</span>

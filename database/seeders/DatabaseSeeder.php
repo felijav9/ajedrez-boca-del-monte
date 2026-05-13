@@ -1996,7 +1996,8 @@ class DatabaseSeeder extends Seeder
             TorneoJugadorSeeder::class,
             ResultadoIndividualSeeder::class,
             ImagenTorneosSeeder::class,
-            ProtejoMiMenteEventosSeeder::class
+            ProtejoMiMenteEventosSeeder::class,
+            TorneoMayoSeeder::class
         ]);
         
     }

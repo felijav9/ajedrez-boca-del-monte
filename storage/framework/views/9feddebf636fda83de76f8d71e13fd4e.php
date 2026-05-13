@@ -723,7 +723,7 @@ Total <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php $component->withAttributes(['variant' => 'filled','style' => 'background: #002c53; color: white;']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-Entendido <?php echo $__env->renderComponent(); ?>
+Cerrar <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580)): ?>
 <?php $attributes = $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
