@@ -879,51 +879,74 @@ onmouseout="this.style.transform='translateY(0)'">--}}
 
                 {{-- BODY --}}
                 <tbody>
-                    @foreach ($participaciones as $p)
 
-                        @php
-                            $r = $resultados->get($p->jugador_id)?->first();
-                        @endphp
+    @foreach (
+        $participaciones->sortBy(function($p) use ($resultados) {
 
-                        @if($r)
-                            <tr style="background:#f8fafc; transition:0.2s;">
+            return $resultados
+                ->get($p->jugador_id)
+                ?->first()
+                ?->posicion ?? 999;
 
-                                {{-- JUGADOR --}}
-                                <td style="padding:15px; border-radius:12px 0 0 12px; font-weight:700; color:#002c53;">
-                                    {{ $p->jugador->nombre }} {{ $p->jugador->apellido }}
-                                </td>
+        })
+    as $p)
 
-                                {{-- EQUIPO --}}
-                                <td style="padding:15px; color:#64748b;">
-                                    {{ optional($p->equipo)->nombre ?? 'Individual' }}
-                                </td>
+        @php
+            $r = $resultados->get($p->jugador_id)?->first();
+        @endphp
 
-                                {{-- POSICIÓN --}}
-                                <td style="padding:15px; border-radius:0 12px 12px 0; text-align:center;">
-                                    @if($r->posicion == 1)
-                                        <span style="background:#fefce8; color:#a16207; padding:5px 12px; border-radius:10px; font-weight:900;">
-                                            🥇 1ro
-                                        </span>
-                                    @elseif($r->posicion == 2)
-                                        <span style="background:#f1f5f9; color:#475569; padding:5px 12px; border-radius:10px; font-weight:900;">
-                                            🥈 2do
-                                        </span>
-                                    @elseif($r->posicion == 3)
-                                        <span style="background:#fff7ed; color:#9a3412; padding:5px 12px; border-radius:10px; font-weight:900;">
-                                            🥉 3ro
-                                        </span>
-                                    @else
-                                        <span style="color:#94a3b8; font-weight:bold;">
-                                            #{{ $r->posicion }}
-                                        </span>
-                                    @endif
-                                </td>
+        @if($r)
 
-                            </tr>
-                        @endif
+            <tr style="background:#f8fafc; transition:0.2s;">
 
-                    @endforeach
-                </tbody>
+                {{-- JUGADOR --}}
+                <td style="padding:15px; border-radius:12px 0 0 12px; font-weight:700; color:#002c53;">
+                    {{ $p->jugador->nombre }} {{ $p->jugador->apellido }}
+                </td>
+
+                {{-- EQUIPO --}}
+                <td style="padding:15px; color:#64748b;">
+                    {{ optional($p->equipo)->nombre ?? 'Individual' }}
+                </td>
+
+                {{-- POSICIÓN --}}
+                <td style="padding:15px; border-radius:0 12px 12px 0; text-align:center;">
+
+                    @if($r->posicion == 1)
+
+                        <span style="background:#fefce8; color:#a16207; padding:5px 12px; border-radius:10px; font-weight:900;">
+                            🥇 1ro
+                        </span>
+
+                    @elseif($r->posicion == 2)
+
+                        <span style="background:#f1f5f9; color:#475569; padding:5px 12px; border-radius:10px; font-weight:900;">
+                            🥈 2do
+                        </span>
+
+                    @elseif($r->posicion == 3)
+
+                        <span style="background:#fff7ed; color:#9a3412; padding:5px 12px; border-radius:10px; font-weight:900;">
+                            🥉 3ro
+                        </span>
+
+                    @else
+
+                        <span style="color:#94a3b8; font-weight:bold;">
+                            #{{ $r->posicion }}
+                        </span>
+
+                    @endif
+
+                </td>
+
+            </tr>
+
+        @endif
+
+    @endforeach
+
+</tbody>
 
             </table>
         </div>

@@ -1070,54 +1070,75 @@ Cerrar Detalle <?php echo $__env->renderComponent(); ?>
 
                 
                 <tbody>
-                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $participaciones; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
 
-                        <?php
-                            $r = $resultados->get($p->jugador_id)?->first();
-                        ?>
+    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $participaciones->sortBy(function($p) use ($resultados) {
 
-                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($r): ?>
-                            <tr style="background:#f8fafc; transition:0.2s;">
+            return $resultados
+                ->get($p->jugador_id)
+                ?->first()
+                ?->posicion ?? 999;
 
-                                
-                                <td style="padding:15px; border-radius:12px 0 0 12px; font-weight:700; color:#002c53;">
-                                    <?php echo e($p->jugador->nombre); ?> <?php echo e($p->jugador->apellido); ?>
+        }); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoop($loop->index); ?><?php endif; ?>
 
-                                </td>
+        <?php
+            $r = $resultados->get($p->jugador_id)?->first();
+        ?>
 
-                                
-                                <td style="padding:15px; color:#64748b;">
-                                    <?php echo e(optional($p->equipo)->nombre ?? 'Individual'); ?>
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($r): ?>
 
-                                </td>
+            <tr style="background:#f8fafc; transition:0.2s;">
 
-                                
-                                <td style="padding:15px; border-radius:0 12px 12px 0; text-align:center;">
-                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($r->posicion == 1): ?>
-                                        <span style="background:#fefce8; color:#a16207; padding:5px 12px; border-radius:10px; font-weight:900;">
-                                            🥇 1ro
-                                        </span>
-                                    <?php elseif($r->posicion == 2): ?>
-                                        <span style="background:#f1f5f9; color:#475569; padding:5px 12px; border-radius:10px; font-weight:900;">
-                                            🥈 2do
-                                        </span>
-                                    <?php elseif($r->posicion == 3): ?>
-                                        <span style="background:#fff7ed; color:#9a3412; padding:5px 12px; border-radius:10px; font-weight:900;">
-                                            🥉 3ro
-                                        </span>
-                                    <?php else: ?>
-                                        <span style="color:#94a3b8; font-weight:bold;">
-                                            #<?php echo e($r->posicion); ?>
+                
+                <td style="padding:15px; border-radius:12px 0 0 12px; font-weight:700; color:#002c53;">
+                    <?php echo e($p->jugador->nombre); ?> <?php echo e($p->jugador->apellido); ?>
 
-                                        </span>
-                                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-                                </td>
+                </td>
 
-                            </tr>
-                        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                
+                <td style="padding:15px; color:#64748b;">
+                    <?php echo e(optional($p->equipo)->nombre ?? 'Individual'); ?>
 
-                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-                </tbody>
+                </td>
+
+                
+                <td style="padding:15px; border-radius:0 12px 12px 0; text-align:center;">
+
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($r->posicion == 1): ?>
+
+                        <span style="background:#fefce8; color:#a16207; padding:5px 12px; border-radius:10px; font-weight:900;">
+                            🥇 1ro
+                        </span>
+
+                    <?php elseif($r->posicion == 2): ?>
+
+                        <span style="background:#f1f5f9; color:#475569; padding:5px 12px; border-radius:10px; font-weight:900;">
+                            🥈 2do
+                        </span>
+
+                    <?php elseif($r->posicion == 3): ?>
+
+                        <span style="background:#fff7ed; color:#9a3412; padding:5px 12px; border-radius:10px; font-weight:900;">
+                            🥉 3ro
+                        </span>
+
+                    <?php else: ?>
+
+                        <span style="color:#94a3b8; font-weight:bold;">
+                            #<?php echo e($r->posicion); ?>
+
+                        </span>
+
+                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+                </td>
+
+            </tr>
+
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+
+</tbody>
 
             </table>
         </div>
